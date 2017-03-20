@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+            $("#textbox").on('input',function() {
+                //console.log("button pressed!");
+                $.ajax({url: "/checkUserDup?userName="+$("#textbox").val(), success: function(result){
+                    console.log(result);
+                    if(result.UserId==-1){
+                        $("#output").html("<font color='green'> user name is open!</font>");
+                        console.log("ok!");
+                    }
+                    else{
+                        $("#output").html("<font color='red'> user name is used!</font>");
+                        console.log("fail!");
+                    }
+                }});
+            });
+        });
+    </script>
+
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+
+    <input type="text" id="textbox">
+    <br>
+    <br>
+  <div id="output">
+
+  </div>
+
+
+
+  </body>
+</html>
