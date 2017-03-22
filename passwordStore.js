@@ -6,5 +6,10 @@ module.exports = {
 
     init: function (res, password) {
         //hash and salt
+
+
+
+
+
     }
 }
