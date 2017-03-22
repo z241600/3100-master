@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/javascripts/qrcode.js"></script>
+    <script>
+        $( document ).ready(function() {
+            var formReady=0;
+                new QRCode(document.getElementById("output"), "<%=url%>");
+            $("#textbox").on('input',function() {
+                //console.log("button pressed!");
+               if ($("#textbox").val().length ==6){
+                   $.ajax({
+                           url:"/verifyF2AToken/",
+                       type:"POST",
+                       data:{secret:'<%=secretTxt%>', token:$("#textbox").val()},
+                       success:function (result) {
+                            console.log(result.return);
+
+                           if (result.return) {
+                               formReady = 1;
+                               $("#SubmitButton").prop("disabled", false);
+                           }
+                           else {
+                               formReady = 0;
+                               $("#SubmitButton").prop("disabled", true);
+                           }
+                       }
+               });
+               }
+               else{
+                   formReady=0;
+                   $("#SubmitButton").prop("disabled",true);
+                }
+            });
+            //click button then insert into DB
+        });
+
+
+    </script>
+
+  </head>
+  <body>
+
+  Please use google authenticator to enable two factor authentication function.<be></be>
+
+  Please scan the qrcode:
+
+  <div id="output">
+
+  </div>
+  Or enter the string below:<br>
+  <font id="urlText"><%=secretTxt%></font>
+<br>
+  Please verify the app is working correctly by typing in the code generating below:
+  <br>
+  <input type="text" id="textbox">
+  <button id="SubmitButton" disabled>Submit</button>
+
+  </body>
+</html>
