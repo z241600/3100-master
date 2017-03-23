@@ -40,9 +40,11 @@ router.post('/verifyF2AToken',function (req,res,next) {
 });
 
 //log-in
-router.post('/passwordStore',function (req,res,next) {
+router.post('/passwordHash',function (req,res,next) {
     var password = req.body.password;
     passwordStore.init(res,password);
 });
+
+
 
 module.exports = router;
