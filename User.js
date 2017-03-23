@@ -3,7 +3,7 @@
  */
 module.exports = {
 
-    checkUserDup: function (userName,res) {
+    checkUserDup: function (userName, res) {
 
         var mysql = require("mysql");
         var connection = mysql.createConnection({
@@ -14,7 +14,7 @@ module.exports = {
             "database": "user"
         });
 
-        var sql = "SELECT UserId FROM userlogindata WHERE userName='"+userName+"'";
+        var sql = "SELECT UserId FROM userlogindata WHERE userName='" + userName + "'";
         console.log(sql);
         connection.query(sql, function (error, results) {
             if (error) {
@@ -22,18 +22,17 @@ module.exports = {
             }
 
 
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, {'Content-Type': 'application/json'});
 
-            if (!Object.keys( results).length)
-            {
-                returnVar = {'UserId':-1};
+            if (!Object.keys(results).length) {
+                returnVar = {'UserId': -1};
             }
-            else{
+            else {
                 returnVar = results[0];
             }
             res.end(JSON.stringify(returnVar));
 
             return returnVar;
-    });
+        });
     }
 }
