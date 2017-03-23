@@ -24,4 +24,4 @@ module.exports = {
         }
         res.end(JSON.stringify(returnVar));
     }
-    }
+};

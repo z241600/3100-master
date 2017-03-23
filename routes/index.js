@@ -33,9 +33,48 @@ router.get('/enableTwoAuth',function (req,res,next) {
     var UserId = 1;
     TwoFA.init(res,UserId);
 });
+
+router.get('/browseRecord', function (req,res,next){
+    var itemId = req.body.itemId;
+    browseRecord.init(res,itemId);
+});
+
+router.get('/simpleSearch', function (req,res,next){
+    var targetName = req.body.targetName;
+    simpleSearch.init(res,targetName);
+});
+
+router.get('/advanceSearch', function (req,res,next){
+    var targetName = req.body.targetName;
+    var priceRange = req.body.priceRange;
+    var catalogId = req.body.catalogId
+    advanceSearch.init(res,targetName,priceRange,catalogId);
+});
+
+
 router.post('/verifyF2AToken',function (req,res,next) {
     var token = req.body.token;
     var secret = req.body.secret;
     verifyF2A.init(res,token,secret);
 });
+
+router.post('/userLogin',function (req,res,next) {
+    var inputUsername = req.body.inputUsername;
+    var inputPassword = req.body.inputPassword;
+    userLogin.init(res,inputUsername,inputPassword);
+});
+
+router.post('/createUser', function (req,res,next){
+    var userName = req.body.userName;
+    var password = req.body.password;
+    var email = req.body.email;
+    var addr = req.body.addr;
+    var telNo = req.body.telNo;
+    var location = req.body.location;
+    createUser.init(res,userName,password,email,addr,telNo,location);
+});
+
+
+
+
 module.exports = router;
