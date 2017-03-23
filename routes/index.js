@@ -51,6 +51,16 @@ router.get('/advanceSearch', function (req,res,next){
     advanceSearch.init(res,targetName,priceRange,catalogId);
 });
 
+router.get('/simpleSearch', function (req,res,next){
+    var targetName = req.body.targetName;
+    simpleSearch.init(res,targetName);
+});
+
+router.get('/recommend',function (req,res,next){
+    //this one need some more followup
+    recommend.init(res);
+});
+
 
 router.post('/verifyF2AToken',function (req,res,next) {
     var token = req.body.token;
