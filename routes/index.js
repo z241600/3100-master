@@ -47,10 +47,28 @@ router.get('/simpleSearch', function (req,res,next){
 router.get('/advanceSearch', function (req,res,next){
     var targetName = req.body.targetName;
     var priceRange = req.body.priceRange;
-    var catalogId = req.body.catalogId
+    var catalogId = req.body.catalogId;
     advanceSearch.init(res,targetName,priceRange,catalogId);
 });
 
+router.get('/simpleSearch', function (req,res,next){
+    var targetName = req.body.targetName;
+    simpleSearch.init(res,targetName);
+});
+
+router.get('/recommend',function (req,res,next){
+    //this one need some more followup
+    recommend.init(res);
+});
+
+router.post('/createItem',function(req,res,next){
+    var itemName = req.body.itemName;
+    var itemDesc = req.body.itemDesc;
+    var catId = req.body.catId;
+    var price = req.body.price;
+    var photoNum = req.body.photoNum;
+    createItem.init(res,itemName,catId,price,photoNum,itemDesc);
+});
 
 router.post('/verifyF2AToken',function (req,res,next) {
     var token = req.body.token;
