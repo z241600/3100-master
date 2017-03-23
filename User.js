@@ -35,5 +35,15 @@ module.exports = {
 
             return returnVar;
     });
+    },
+    CreateUser:function (UserName,Hash,Salt,AuthToken,FirstName,LastName,Addr,TelNo,Email,Location){
+
+    },
+    updateUserData:function (UserID,json)
+    {
+        //to interface with the DB to update user's data
     }
-}
+
+
+
+};
