@@ -5,10 +5,16 @@ var verifyF2A = require('../verifyF2AToken');
 var userDB = require("./userDB");
 var router = express.Router();
 var bodyParser = require('body-parser');
+var session = require('express-session');
+
 var app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+app.use(session({
+    secret: 'csci3100 proj',
+    cookie: { maxAge: 60 * 1000 }
+}));
 //To get GET parameters like xyz.com/?a=1&b=1, use
 //req.query.a and req.query.b
 //To get POST parameters, use
@@ -91,10 +97,12 @@ router.post('/createUser', function (req,res,next){
     var userName = req.body.userName;
     var password = req.body.password;
     var email = req.body.email;
+    var lastName = req.body.lastName;
+    var firstName = req.body.firstName;
     var addr = req.body.addr;
     var telNo = req.body.telNo;
     var location = req.body.location;
-    createUser.init(res,userName,password,email,addr,telNo,location);
+    createUser.init(res,userName,password,email,addr,telNo,location,firstName,lastName);
 });
 
 

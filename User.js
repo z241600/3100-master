@@ -37,7 +37,26 @@ module.exports = {
     });
     },
     CreateUser:function (UserName,Hash,Salt,AuthToken,FirstName,LastName,Addr,TelNo,Email,Location){
+        var he =  require("he");
+        var mysql = require("mysql");
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+        FirstName = he.encode(FirstName);
+        LastName = he.encode(LastName);
+        Addr = he.encode(Addr);
+        TelNo = he.encode(TelNo);
+        Location = he.encode(Location);
+        var sql = "INSERT INTO UserData (FirstName,LastName,Addr,TelNo,Location) VALUES ('"+FirstName+"','"+LastName+"',,'"+Addr+"',,'"+TelNo+"',,'"+Location+"',)";
+        console.log(sql);
+        connection.query(sql, function (error, results) {
 
+            //res.render('signup', {});
+        });
     },
     updateUserData:function (UserID,json)
     {
