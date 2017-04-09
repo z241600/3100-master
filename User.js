@@ -36,9 +36,10 @@ module.exports = {
             return returnVar;
     });
     },
-    CreateUser:function (UserName,Hash,Salt,AuthToken,FirstName,LastName,Addr,TelNo,Email,Location){
+    CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location){
         var he =  require("he");
         var mysql = require("mysql");
+        var userID;
         var connection = mysql.createConnection({
             "host": "localhost",
             "port": 3306,
@@ -51,12 +52,33 @@ module.exports = {
         Addr = he.encode(Addr);
         TelNo = he.encode(TelNo);
         Location = he.encode(Location);
-        var sql = "INSERT INTO UserData (FirstName,LastName,Addr,TelNo,Location) VALUES ('"+FirstName+"','"+LastName+"',,'"+Addr+"',,'"+TelNo+"',,'"+Location+"',)";
+        var sql = "INSERT INTO userlogindata (userName) VALUES ('"+UserName+"')";
+        connection.query(sql, function (error, results) {});
+        console.log(sql);
+        sql = "SELECT UserId FROM userlogindata WHERE userName='"+UserName+"'";
         console.log(sql);
         connection.query(sql, function (error, results) {
+            userID = results[0]['UserId'];
+            var sql2 = "INSERT INTO userdata (UserID,FirstName,LastName,Addr,TelNo,Location) VALUES ("+userID.toString()+",'"+FirstName+"','"+LastName+"','"+Addr+"','"+TelNo+"','"+Location+"')";
+            console.log(sql2);
+            connection.query(sql2, function (error, results) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                if (error) {
+                    console.log("UserData failed");
+                    console.log(error);
+                    returnVar = {'return':0};
 
-            //res.render('signup', {});
+                }else{
+                    console.log("UserData successful");
+                    returnVar = {'return':1};
+                }
+                res.end(JSON.stringify(returnVar));
+                return returnVar;
+                //res.render('signup', {});
+            });
         });
+
+
     },
     updateUserData:function (UserID,json)
     {
