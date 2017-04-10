@@ -68,7 +68,42 @@ module.exports = {
     },
     updateItem:function (ItemID,json) {
         //update the item's info, given the ID and the data needed in the JSON.
+        var mysql = require("mysql");
 
-    }
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+
+        var data = {"itemName": "", "catId": "", "price": "", "photoNum": "", "itemDesc":"","ItemID":""};
+        var parsedData = json.parse(data);
+
+        var itemName = parsedData.itemName;
+        var catId = parsedData.catId;
+        var price = parsedData.price;
+        var photoNum = parsedData.photoNum;
+        var itemDesc = parsedData.itemDesc;
+        //var ItemID = parsedData.ItemID;
+
+
+            sql_stmt = "UPDATE Users SET itemName = ?,catId = ?, catId = ?, price = ?, photoNum = ?, itemDesc = ?, WHERE ItemID = ?";
+
+            var values = [itemName, catId, price, photoNum, itemDesc,id];
+
+            sql_stmt = mysql.format(sql_stmt, values);
+
+            connection.query(sql_stmt, function (error) {
+                if (error) {
+                    console.log('The following error occured while trying to insert a new record ' + error.message);
+                }
+                console.log();
+                console.log('Updated User information with id ' + id);
+            })
+        }
+
+
 
 };

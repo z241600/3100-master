@@ -75,7 +75,7 @@ updateRecord: function() {
             console.log('The following error occured while trying to insert a new record ' + error.message);
         }
         console.log();
-        console.log('Updated User with id ' + id);
+        console.log('Updated User information with id ' + id);
     })
 }
 };
