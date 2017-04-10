@@ -36,6 +36,7 @@ module.exports = {
             return returnVar;
         });
     },
+
     CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location){
         var he =  require("he");
         var mysql = require("mysql");
@@ -83,6 +84,40 @@ module.exports = {
 
 
     },
+
+    LoginUser:function (res,UserName_input,password_input){
+        var he =  require("he");
+        var mysql = require("mysql");
+        var hashing = require('password-hash');
+        var userID;
+        var userPWHash;
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+        //Using sha1 algo for hashing and 16 byte long salt with 8 iterations
+        sql = "SELECT UserId,PWHash FROM userlogindata WHERE userName='"+UserName_input+"'";
+        console.log(sql);
+        connection.query(sql, function (error, results) {
+            if (error){
+                //the userID does not exist
+            }
+            userID = results[0]['UserId'];
+            userPWHash  = results[0]['PWHash'];
+            if (hashing.verify(password_input, userPWHash)===true){
+                //login success
+
+            }else{
+                //login fail
+            }
+        });
+
+    },
+
+
     updateUserData:function (UserID,json)
     {
         //to interface with the DB to update user's data
