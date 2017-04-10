@@ -40,7 +40,6 @@ module.exports = {
     CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location){
         var he =  require("he");
         var mysql = require("mysql");
-        var hashing = require('password-hash');
         var userID;
         var connection = mysql.createConnection({
             "host": "localhost",
@@ -49,8 +48,7 @@ module.exports = {
             "password": "csci3100",
             "database": "user"
         });
-        //Using Sha1 algo for hashing and 16 byte long salt with 8 iterations
-        var PWHash = hashing.generate(password, sha1, 16, 8);
+        var PWHash="a";
         FirstName = he.encode(FirstName);
         LastName = he.encode(LastName);
         Addr = he.encode(Addr);
