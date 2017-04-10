@@ -66,6 +66,15 @@ router.get('/recommend',function (req,res,next){
     recommend.init(res);
 });
 
+router.get('/SignUp',function (req,res,next){
+
+    res.render('signup', {});
+});
+
+router.get("/login",function (req,res,next){
+    //this one need some more followup
+    res.render('signin', { });
+});
 router.post('/createItem',function(req,res,next){
     var itemName = req.body.itemName;
     var itemDesc = req.body.itemDesc;
