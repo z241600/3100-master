@@ -1,14 +1,19 @@
 var express = require('express');
 var user = require('../User');
-var TwoFA = require('../Enable2FA');
-var verifyF2A = require('../verifyF2AToken');
+var TwoFA = require('../2FA');
 var userDB = require("./userDB");
 var router = express.Router();
 var bodyParser = require('body-parser');
+var session = require('express-session');
+
 var app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+app.use(session({
+    secret: 'csci3100 proj',
+    cookie: { maxAge: 60 * 1000 }
+}));
 //To get GET parameters like xyz.com/?a=1&b=1, use
 //req.query.a and req.query.b
 //To get POST parameters, use
@@ -31,7 +36,7 @@ router.get('/checkUserDup',function (req,res,next) {
 });
 router.get('/enableTwoAuth',function (req,res,next) {
     var UserId = 1;
-    TwoFA.init(res,UserId);
+    TwoFA.generate2FAToken(res,UserId);
 });
 
 router.get('/browseRecord', function (req,res,next){
@@ -61,6 +66,11 @@ router.get('/recommend',function (req,res,next){
     recommend.init(res);
 });
 
+router.get('/SignUp',function (req,res,next){
+
+    res.render('signup', {});
+});
+
 router.post('/createItem',function(req,res,next){
     var itemName = req.body.itemName;
     var itemDesc = req.body.itemDesc;
@@ -73,7 +83,7 @@ router.post('/createItem',function(req,res,next){
 router.post('/verifyF2AToken',function (req,res,next) {
     var token = req.body.token;
     var secret = req.body.secret;
-    verifyF2A.init(res,token,secret);
+    TwoFA.verify2FASecrete(res,token,secret);
 });
 
 router.post('/userLogin',function (req,res,next) {
@@ -86,10 +96,13 @@ router.post('/createUser', function (req,res,next){
     var userName = req.body.userName;
     var password = req.body.password;
     var email = req.body.email;
+    var lastName = req.body.lastName;
+    var firstName = req.body.firstName;
     var addr = req.body.addr;
     var telNo = req.body.telNo;
     var location = req.body.location;
-    createUser.init(res,userName,password,email,addr,telNo,location);
+
+    user.CreateUser(res,userName,password,firstName,lastName,addr,telNo,email,location);
 });
 
 
