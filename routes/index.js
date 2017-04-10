@@ -84,7 +84,7 @@ router.post('/verifyF2AToken',function (req,res,next) {
 router.post('/userLogin',function (req,res,next) {
     var inputUsername = req.body.inputUsername;
     var inputPassword = req.body.inputPassword;
-    userLogin.init(res,inputUsername,inputPassword);
+    LoginUser.init(res,inputUsername,inputPassword);
 });
 
 router.post('/createUser', function (req,res,next){

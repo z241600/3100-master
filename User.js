@@ -40,7 +40,7 @@ module.exports = {
     CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location){
         var he =  require("he");
         var mysql = require("mysql");
-        var hashing = require('password-hash');
+        var scrypt = require('scrypt');
         var userID;
         var connection = mysql.createConnection({
             "host": "localhost",
@@ -49,8 +49,15 @@ module.exports = {
             "password": "csci3100",
             "database": "user"
         });
-        //Using Sha1 algo for hashing and 16 byte long salt with 8 iterations
-        var PWHash = hashing.generate(password, sha1, 16, 8);
+
+        var scryptParameters = scrypt.paramsSync(0.1);
+        try {
+            var PWHash = scrypt.kdfSync(password, scryptParameters);
+        }catch(err){
+            console.log(err);
+        }
+        PWHah=PWHash.toString("hex");
+
         FirstName = he.encode(FirstName);
         LastName = he.encode(LastName);
         Addr = he.encode(Addr);
@@ -88,7 +95,7 @@ module.exports = {
     LoginUser:function (res,UserName_input,password_input){
         var he =  require("he");
         var mysql = require("mysql");
-        var hashing = require('password-hash');
+        var scrypt = require("scrypt");
         var userID;
         var userPWHash;
         var connection = mysql.createConnection({
@@ -98,6 +105,7 @@ module.exports = {
             "password": "csci3100",
             "database": "user"
         });
+
         //Using sha1 algo for hashing and 16 byte long salt with 8 iterations
         sql = "SELECT UserId,PWHash FROM userlogindata WHERE userName='"+UserName_input+"'";
         console.log(sql);
@@ -105,13 +113,15 @@ module.exports = {
             if (error){
                 //the userID does not exist
             }
+            var scryptParameters = scrypt.paramsSync(0.1);
             userID = results[0]['UserId'];
             userPWHash  = results[0]['PWHash'];
-            if (hashing.verify(password_input, userPWHash)===true){
+            if (scrypt.verifyKdfSync(userPWHash, password_input)===true){
                 //login success
 
             }else{
                 //login fail
+
             }
         });
 
