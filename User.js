@@ -34,11 +34,13 @@ module.exports = {
             res.end(JSON.stringify(returnVar));
 
             return returnVar;
-    });
+        });
     },
+
     CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location){
         var he =  require("he");
         var mysql = require("mysql");
+        var hashing = require('password-hash');
         var userID;
         var connection = mysql.createConnection({
             "host": "localhost",
@@ -47,12 +49,14 @@ module.exports = {
             "password": "csci3100",
             "database": "user"
         });
+        //Using Sha1 algo for hashing and 16 byte long salt with 8 iterations
+        var PWHash = hashing.generate(password, sha1, 16, 8);
         FirstName = he.encode(FirstName);
         LastName = he.encode(LastName);
         Addr = he.encode(Addr);
         TelNo = he.encode(TelNo);
         Location = he.encode(Location);
-        var sql = "INSERT INTO userlogindata (userName) VALUES ('"+UserName+"')";
+        var sql = "INSERT INTO userlogindata (userName,PWHash) VALUES ('"+UserName+"','"+PWHash+"')";
         connection.query(sql, function (error, results) {});
         console.log(sql);
         sql = "SELECT UserId FROM userlogindata WHERE userName='"+UserName+"'";
@@ -80,6 +84,40 @@ module.exports = {
 
 
     },
+
+    LoginUser:function (res,UserName_input,password_input){
+        var he =  require("he");
+        var mysql = require("mysql");
+        var hashing = require('password-hash');
+        var userID;
+        var userPWHash;
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+        //Using sha1 algo for hashing and 16 byte long salt with 8 iterations
+        sql = "SELECT UserId,PWHash FROM userlogindata WHERE userName='"+UserName_input+"'";
+        console.log(sql);
+        connection.query(sql, function (error, results) {
+            if (error){
+                //the userID does not exist
+            }
+            userID = results[0]['UserId'];
+            userPWHash  = results[0]['PWHash'];
+            if (hashing.verify(password_input, userPWHash)===true){
+                //login success
+
+            }else{
+                //login fail
+            }
+        });
+
+    },
+
+
     updateUserData:function (UserID,json)
     {
         //to interface with the DB to update user's data
