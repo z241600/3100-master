@@ -56,7 +56,7 @@ module.exports = {
         }catch(err){
             console.log(err);
         }
-        PWHah=PWHash.toString("hex");
+        PWHash=PWHash.toString("hex");
 
         FirstName = he.encode(FirstName);
         LastName = he.encode(LastName);
@@ -107,16 +107,16 @@ module.exports = {
         });
 
         //Using sha1 algo for hashing and 16 byte long salt with 8 iterations
-        sql = "SELECT UserId,PWHash FROM userlogindata WHERE userName='"+UserName_input+"'";
+        sql = "SELECT UserId,PWHash FROM userlogindata WHERE email='"+UserName_input+"'";
         console.log(sql);
         connection.query(sql, function (error, results) {
             if (error){
                 //the userID does not exist
             }
-            var scryptParameters = scrypt.paramsSync(0.1);
             userID = results[0]['UserId'];
             userPWHash  = results[0]['PWHash'];
-            if (scrypt.verifyKdfSync(userPWHash, password_input)===true){
+            var buffer = new Buffer(userPWHash,'hex').toString('utf8');
+            if (scrypt.verifyKdfSync(buffer, password_input)===true){
                 //login success
 
             }else{

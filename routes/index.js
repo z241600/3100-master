@@ -5,6 +5,8 @@ var userDB = require("./userDB");
 var router = express.Router();
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var Email = require('../Email');
+
 
 var app = express();
 app.use(bodyParser.json()); // support json encoded bodies
@@ -22,7 +24,10 @@ app.use(session({
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+
+    res.render('index', { title: 'Express' });
+    Email.SendAuthEmail('asdkevinasd@gamil.com');
+
 });
 
 router.get('/user',function (req,res,next) {
