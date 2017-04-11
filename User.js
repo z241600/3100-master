@@ -76,7 +76,10 @@ module.exports = {
     CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location){
         var he =  require("he");
         var mysql = require("mysql");
+
+
         var scrypt = require("scrypt");
+
         var userID;
         var connection = mysql.createConnection({
             "host": "localhost",
@@ -85,13 +88,16 @@ module.exports = {
             "password": "csci3100",
             "database": "user"
         });
+
         var scryptParameters = scrypt.paramsSync(0.1);
         try {
             var PWHash = scrypt.kdfSync(password, scryptParameters);
         }catch(err){
             console.log(err);
         }
+
         var PWHashString=PWHash.toString("hex");
+
         FirstName = he.encode(FirstName);
         LastName = he.encode(LastName);
         Addr = he.encode(Addr);
@@ -134,7 +140,12 @@ module.exports = {
         var he =  require("he");
         var mysql = require("mysql");
         var scrypt = require("scrypt");
+
+      var session = require("./session");
+
+
         var session = require("./session");
+
         var userID;
         var userPWHash;
         var connection = mysql.createConnection({
@@ -144,6 +155,9 @@ module.exports = {
             "password": "csci3100",
             "database": "user"
         });
+
+
+        //Using sha1 algo for hashing and 16 byte long salt with 8 iterations
         if(  !UserName_input || !password_input)
         {
             res.render("messageRedir",{head:"login failed!",top:"Sorry!",lower:"redirecting you to our login page..",redir:"./login",background:"red"})
@@ -151,6 +165,7 @@ module.exports = {
         }
         //Using sha1 algo for hashing and 16 byte long salt with 8 iterations
         sql = "SELECT UserId,PWHash,AccType,TwoFactorAuth FROM userlogindata WHERE Email='"+UserName_input+"'";
+
         console.log(sql);
         connection.query(sql, function (error, results) {
             if (error){
@@ -179,9 +194,9 @@ module.exports = {
             }
             userID = results[0]['UserId'];
             userPWHash  = results[0]['PWHash'];
-           // res.writeHead(200, { 'Content-Type': 'application/json' });
 
             if (scrypt.verifyKdfSync(new Buffer(userPWHash,'hex'), password_input)===true){
+
                 //login success
 
                 if(results[0]['TwoFactorAuth']==null)
@@ -201,8 +216,10 @@ module.exports = {
             }else{
               //  returnVar = {'return':0};
                 //login fail
+
                 res.render("messageRedir",{head:"login failed!",top:"Sorry!",lower:"redirecting you to our login page..",redir:"./login",background:"red"});
                 return 0;
+
             }
            // res.end(JSON.stringify(returnVar));
         });

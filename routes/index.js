@@ -5,7 +5,13 @@ var userDB = require("./userDB");
 var router = express.Router();
 var bodyParser = require('body-parser');
 var session = require('express-session');
+
+var Email = require('../Email');
+var crypto = require('crypto');
+
+
 var sess = require("../session");
+
 
 var app = express();
 app.use(bodyParser.json()); // support json encoded bodies
@@ -20,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 var ssn;
 /* GET home page. */
 router.get('/', function(req, res, next) {
+
     ssn = req.session;
     console.log(req.sessionID);
     console.log(ssn.userId);
@@ -35,6 +42,7 @@ router.get('/', function(req, res, next) {
             res.render('index', {});
         }
     });
+
 
 });
 
@@ -187,6 +195,13 @@ router.get("/loggout",function (req,res,next){
     //this one need some more followup
     user.LogoutUser(res,req);
 });
+
+router.get('/verifyEmailToken', function(req,res,next){
+    var token = req.query.token;
+    var userID = req.query.userID;
+    Email.AuthEmailToken(userID,token);
+});
+
 router.post('/createItem',function(req,res,next){
     var itemName = req.body.itemName;
     var itemDesc = req.body.itemDesc;
@@ -207,9 +222,11 @@ router.post('/verifyF2AToken',function (req,res,next) {
 });
 
 router.post('/userLogin',function (req,res,next) {
+
     var inputUsername = req.body.email;
     var inputPassword = req.body.pwd;
     user.LoginUser(res,inputUsername,inputPassword,req);
+
 });
 
 router.post('/createUser', function (req,res,next){
@@ -224,6 +241,7 @@ router.post('/createUser', function (req,res,next){
 
     user.CreateUser(res,userName,password,firstName,lastName,addr,telNo,email,location);
 });
+
 
 
 
