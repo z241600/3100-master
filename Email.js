@@ -4,7 +4,7 @@
 module.exports = {
 
 
-    SendAuthEmail: function (Email,userID) {
+    SendAuthEmail: function (Email,userID,res,callback) {
 
         //send email to user to verify the email address
         var nodemailer = require('nodemailer');
@@ -20,9 +20,9 @@ module.exports = {
 
         console.log(token);
 
-        var htmltemplate = "<p>Please click the following link to verify your email address. This link is one-time use only</p> <a href>";
+        var htmltemplate = "<p>Please click the following link to verify your email address. This link is one-time use only</p><br> <a href='";
 
-        htmltemplate += "localhost:3000/verifyEmailToken?token=" + token + "&userID=" + userID + "</a>" ;
+        htmltemplate += "http://localhost:3000/verifyEmailToken?token=" + token + "&userID=" + userID + "'>Click Here:</a>" ;
 
         console.log(htmltemplate);
 
@@ -60,16 +60,17 @@ module.exports = {
         });
 
         const Acctype = 'V';
-        var sql = "UPDATE userdata SET 'AccType' = '"+Acctype+"' 'AuthToken' = '"+token+"' WHERE UserID="+userID;
+        var sql = "UPDATE userlogindata SET AccType = '"+Acctype+"', AuthToken = '"+token+"' WHERE UserID="+userID;
 
         connection.query(sql, function (error, results) {
             if (error){
                 return console.log(error.toString());
             }
+                callback(res);
                 console.log("Saved Acctype and AuthToken");
         });
     },
-    AuthEmailToken: function (UserID, Token) {
+    AuthEmailToken: function (userID, Token,res) {
         //Authendicate user with the provided token, and activating the user's account
 
         var mysql = require("mysql");
@@ -81,24 +82,25 @@ module.exports = {
             "password": "csci3100",
             "database": "user"
         });
-
-        var sql = "SELECT UserId,AuthToken FROM userdata WHERE UserID=" + userID;
+        console.log(userID);
+        var sql = "SELECT UserId,AuthToken FROM userlogindata WHERE UserID="+userID;
         connection.query(sql, function (error, results) {
             if (error){
                 return console.log(error.toString());
             }
-            userID = results[0]['UserId'];
+            //userID = results[0]['UserId'];
             AuthToken  = results[0]['AuthToken'];
             Acctype = 'N';
             buf = "-1";
             if (AuthToken === Token){
                 console.log("Verified %s", userID);
-                var sql2 = "UPDATE userdata SET 'AccType' = '"+Acctype+"' 'AuthToken' = '"+buf+"' WHERE UserID="+userID;
-                connection.query(sql, function (error, results) {
+                var sql2 = "UPDATE userlogindata SET AccType = '"+Acctype+"',AuthToken = '"+buf+"' WHERE UserID="+userID;
+                connection.query(sql2, function (error, results) {
                     if (error){
                         return console.log(error.toString());
                     }
                     console.log("UPDATED %s", userID);
+                    res.render("messageRedir",{head:"Verified successfully!",top:"Your email have been verified.",lower:"You can now join our many users to enjoy our features! Redirecting to homepage...",background:"green",redir:"../"});
                 });
             }else{
                 console.log("WRONG Token");

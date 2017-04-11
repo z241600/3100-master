@@ -184,7 +184,7 @@ router.post("/verifyTwoFactorToken",function (req,res,next) {
             }
             else
             {
-                sess.destroy();
+                req.session.destroy();
                 res.render('messageRedir',{background:'red',head:"Ooops!",top:"Two Factor Authendication code invaild!",lower:"you will be redirected to our haome page." ,redir:"../"});
             }
         });
@@ -199,7 +199,8 @@ router.get("/loggout",function (req,res,next){
 router.get('/verifyEmailToken', function(req,res,next){
     var token = req.query.token;
     var userID = req.query.userID;
-    Email.AuthEmailToken(userID,token);
+    console.log(token);
+    Email.AuthEmailToken(userID,token,res);
 });
 
 router.post('/createItem',function(req,res,next){

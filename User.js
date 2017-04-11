@@ -76,7 +76,7 @@ module.exports = {
     CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location){
         var he =  require("he");
         var mysql = require("mysql");
-
+        var email = require("./Email");
 
         var scrypt = require("scrypt");
 
@@ -122,13 +122,19 @@ module.exports = {
                     console.log("UserData failed");
                     console.log(error);
                     returnVar = {'return':0};
+                    res.end(JSON.stringify(returnVar));
 
                 }else{
+
                     console.log("UserData successful");
-                    returnVar = {'return':1};
+
+                    email.SendAuthEmail(Email,userID,res,function (res) {
+                        returnVar = {'return':1};
+                        res.end(JSON.stringify(returnVar));
+                    })
                 }
-                res.end(JSON.stringify(returnVar));
-                return returnVar;
+
+                return 0;
                 //res.render('signup', {});
             });
         });
