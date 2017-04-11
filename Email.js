@@ -9,13 +9,7 @@ module.exports = {
         //send email to user to verify the email address
         var nodemailer = require('nodemailer');
 
-        var connection = mysql.createConnection({
-            "host": "localhost",
-            "port": 3306,
-            "user": "root",
-            "password": "csci3100",
-            "database": "user"
-        });
+        var mysql = require("mysql");
 
         //var hex = token.toString('hex');
         var crypto = require('crypto');
@@ -28,7 +22,9 @@ module.exports = {
 
         var htmltemplate = "<p>Please click the following link to verify your email address. This link is one-time use only</p> <a href>";
 
-        htmltemplate += "localhost:3000/" + token+ "</a>";
+        htmltemplate += "localhost:3000/verifyEmailToken?token=" + token + "&userID=" + userID + "</a>" ;
+
+        console.log(htmltemplate);
 
         var transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -54,18 +50,61 @@ module.exports = {
             console.log('Message %s sent: %s', info.messageId, info.response);
         });
 
-        const Acctype = "NoAuth";
+
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+
+        const Acctype = 'V';
         var sql = "UPDATE userdata SET 'AccType' = '"+Acctype+"' 'AuthToken' = '"+token+"' WHERE UserID="+userID;
 
         connection.query(sql, function (error, results) {
             if (error){
-                //console.log(error.toString());
+                return console.log(error.toString());
             }
                 console.log("Saved Acctype and AuthToken");
         });
     },
     AuthEmailToken: function (UserID, Token) {
         //Authendicate user with the provided token, and activating the user's account
+
+        var mysql = require("mysql");
+        var he =  require("he");
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+
+        var sql = "SELECT UserId,AuthToken FROM userdata WHERE UserID=" + userID;
+        connection.query(sql, function (error, results) {
+            if (error){
+                return console.log(error.toString());
+            }
+            userID = results[0]['UserId'];
+            AuthToken  = results[0]['AuthToken'];
+            Acctype = 'N';
+            buf = "-1";
+            if (AuthToken === Token){
+                console.log("Verified %s", userID);
+                var sql2 = "UPDATE userdata SET 'AccType' = '"+Acctype+"' 'AuthToken' = '"+buf+"' WHERE UserID="+userID;
+                connection.query(sql, function (error, results) {
+                    if (error){
+                        return console.log(error.toString());
+                    }
+                    console.log("UPDATED %s", userID);
+                });
+            }else{
+                console.log("WRONG Token");
+                //throw error here
+            }
+        });
 
     }
 };

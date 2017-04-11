@@ -28,7 +28,6 @@ router.get('/', function(req, res, next) {
 
     res.render('index', { title: 'Express' });
 
-    Email.SendAuthEmail('ykeiwan1996@yahoo.com.hk');
 
 });
 
@@ -82,6 +81,13 @@ router.get("/login",function (req,res,next){
     //this one need some more followup
     res.render('signin', { });
 });
+
+router.get('/verifyEmailToken', function(req,res,next){
+    var token = req.query.token;
+    var userID = req.query.userID;
+    Email.AuthEmailToken(userID,token);
+});
+
 router.post('/createItem',function(req,res,next){
     var itemName = req.body.itemName;
     var itemDesc = req.body.itemDesc;
@@ -115,6 +121,7 @@ router.post('/createUser', function (req,res,next){
 
     user.CreateUser(res,userName,password,firstName,lastName,addr,telNo,email,location);
 });
+
 
 
 
