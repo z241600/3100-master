@@ -1,40 +1,56 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
 
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <title>1 Stop Shop</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/main.css">
     <script src="/javascripts/qrcode.js"></script>
     <script>
         $( document ).ready(function() {
             var formReady=0;
-                new QRCode(document.getElementById("output"), "<%=url%>");
+            var url = "<%=url%>";
+            //url=url.replace("SecretKey","Email");
+            url= url+"&issuer=1StopShop";
+                new QRCode(document.getElementById("output"),url);
             $("#textbox").on('input',function() {
                 //console.log("button pressed!");
                if ($("#textbox").val().length ==6){
-                   $.ajax({
-                           url:"/verifyF2AToken/",
-                       type:"POST",
-                       data:{secret:'<%=secretTxt%>', token:$("#textbox").val()},
-                       success:function (result) {
-                            console.log(result.return);
-
-                           if (result.return) {
-                               formReady = 1;
-                               $("#SubmitButton").prop("disabled", false);
-                           }
-                           else {
-                               formReady = 0;
-                               $("#SubmitButton").prop("disabled", true);
-                           }
-                       }
-               });
+                   $("#SubmitButton").prop("disabled",false);
                }
                else{
-                   formReady=0;
+
                    $("#SubmitButton").prop("disabled",true);
                 }
             });
+
+
+            $("#SubmitButton").click(function(){
+                $.ajax({
+                url:"/verifyF2AToken/",
+                type:"POST",
+                data:{secret:'<%=secretTxt%>', token:$("#textbox").val(),
+                    userId: <%=userId%>
+                },
+                success:function (result) {
+                    console.log(result.return);
+
+                    if (result.return) {
+                        alert("Two Factor Authentication is enabled! Redirecting you to our homepage:");
+                        window.location.href = "./";
+
+                    }
+                    else {
+                        alert("The Token is incorrect. Please try again!");
+
+                    }
+                }
+            });});
             //click button then insert into DB
         });
 
@@ -42,22 +58,108 @@
     </script>
 
   </head>
-  <body>
+  <style>
+    .containerTopPadding{
+      padding-top: 10px;
+    }
+    #output img {
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      width:30%
+    }
+    .appleBadge{
 
-  Please use google authenticator to enable two factor authentication function.<be></be>
+      height:77px;
+      margin:auto;
+    }
+    .appleBadgeImg{
+      width:200px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      height: 100%;
+    }
+  </style>
 
-  Please scan the qrcode:
 
-  <div id="output">
+<body>
+  <nav class="navbar navbar-default topNavBar">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="glyphicon glyphicon-menu-hamburger"></span>
+
+        </button>
+        <a class="navbar-brand" href="#">1StopShop</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <!--<li class="active"><a href="#">Home</a></li>-->
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Page 1</a></li>
+          <li><a href="#">Page 2</a></li>
+          <li><a href="#">Page 3</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">Messages<span class="badge">777</span> </a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
+        <form class="navbar-form navbar-right">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search for product">
+          </div>
+          <button type="submit" class="btn btn-default">Go!</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <div class="jumbotron text-center">
+    <h2>
+      Enable Two-factor Authentication<br>
+    </h2>
+    <h5>Makes your account secure again!</h5>
+  </div>
+
+<div class="container containerTopPadding">
+
+
+<div class="row">
+  <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 text-center">
+    <h4>
+  Please use google authenticator to enable two factor authentication function.<br>
+
+  Please scan the qrcode:<br>
+    </h4>
+  <div id="output" class="">
 
   </div>
   Or enter the string below:<br>
   <font id="urlText"><%=secretTxt%></font>
+    <br>
+    <br>
+    Get Google Authenticator on Android or ios!<br>
+    <div class="row">
+      <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center">
+    <a href='https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en_us&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1' target="_blank"><img style="width:200px;" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
+      </div>
+      <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center appleBadge">
+        <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8" target="_blank"><img class="appleBadgeImg" style="width:180px; " src="\images\Appstore.svg"></a>
+      </div>
+  </div>
+
+  </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
 <br>
   Please verify the app is working correctly by typing in the code generating below:
   <br>
   <input type="text" id="textbox">
   <button id="SubmitButton" disabled>Submit</button>
-
+  </div>
+</div>
+</div>
   </body>
 </html>
