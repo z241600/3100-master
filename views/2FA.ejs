@@ -34,7 +34,9 @@
                 $.ajax({
                 url:"/verifyF2AToken/",
                 type:"POST",
-                data:{secret:'<%=secretTxt%>', token:$("#textbox").val()},
+                data:{secret:'<%=secretTxt%>', token:$("#textbox").val(),
+                    userId: <%=userId%>
+                },
                 success:function (result) {
                     console.log(result.return);
 

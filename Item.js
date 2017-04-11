@@ -69,6 +69,18 @@ module.exports = {
     updateItem:function (ItemID,json) {
         //update the item's info, given the ID and the data needed in the JSON.
 
+    },
+    retrieveItem:function(ItemID,res,req){
+        var mysql = require("mysql");
+
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "item"
+        });
     }
+
 
 };

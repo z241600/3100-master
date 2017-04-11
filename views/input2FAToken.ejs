@@ -82,19 +82,14 @@
 
   <div class="jumbotron text-center">
     <h2>
-      Sign In<br>
+      Two Factor Authendication:<br>
     </h2>
-    <h5>Log in to enjoy all the features!</h5>
+    <h5>Please enter the token creagted by Google authentidator:</h5>
   </div>
 
 <div class="container containerTopPadding">
-  <form class="form-horizontal" action="/userLogin" method="POST">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="email">Email:</label>
-      <div class="col-sm-10">
-        <input type="email"  name="email"class="form-control" id="email" placeholder="Enter email">
-      </div>
-    </div>
+  <form class="form-horizontal" action="/verifyTwoFactorToken/" method="POST">
+
     <div class="form-group">
       <label class="control-label col-sm-2" for="pwd">Password:</label>
       <div class="col-sm-10">
