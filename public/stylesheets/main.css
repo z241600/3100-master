@@ -1,0 +1,56 @@
+
+.topNavBar{
+    background-color: #3eb0ab;
+    border-color: #3eb0ab;
+    color:#ffffff;
+    margin-bottom: 0;
+}
+
+.navbar-default .navbar-nav>li>a, .navbar-header .navbar-brand{
+    color:#ffffff;
+}
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-brand:hover{
+    color:#000000;
+}
+.navbar-default .navbar-nav>.active>a,  .navbar-default .navbar-nav>.active>a:hover
+{
+    color:#000000;
+}
+.navbar-default .navbar-brand:focus, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>li>a:focus
+{
+    color: #000000;
+    background-color: #e7e7e7;
+}
+.navbar-default .navbar-brand, .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>li>a
+{
+
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+}
+.notLogginedBanner{
+
+    top:0;
+    background-color: #b01b21;
+    color:#ffffff;
+    margin-bottom: 0;
+}
+.container-fluid{
+    padding-top: 0;
+}
+.container-fluid .row .col-md-3
+{
+    background-color: #f3f3f3;
+}
+.footerBar{
+    background-color: #777777;
+    color:#FFFFFF;
+}
+.mainLetBlock
+{
+    padding-left: 5px;
+}
+.topThreeBox{
+    padding-left: 10px;
+    padding-right: 10px;
+}
