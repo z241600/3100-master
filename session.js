@@ -27,16 +27,17 @@ module.exports = {
             if (error) {
                 return console.error(error);
             }
-     //       console.log(results[0]['SessionData']);
-     //       console.log(sessionID);
-    //        console.log(results[0]['SessionData']==sessionID);
-          //  if (results[0]['SessionData']==sessionID) {
-     //           console.log("callback front");
+
+            if(results[0]['SessionData']==sessionID)
+            {
+                header ="";
+            }
+            else
+            {
+
+            }
                 callback(res,results[0]['SessionData']==sessionID,req);
-         //   }
-          //  else {
-          //      return false;
-           // }
+
         });
 
 
@@ -47,6 +48,7 @@ module.exports = {
         var sessionID = req.sessionID;
         var sess=req.session;
         var mysql = require("mysql");
+        var user = require("./user");
         var connection = mysql.createConnection({
             "host": "localhost",
             "port": 3306,
@@ -73,7 +75,9 @@ module.exports = {
                     console.log(req.sessionID);
                     //callback(res);
                    // return 1;
-                    res.render("messageRedir",{head:"Logged in Successfully!",top:"Welcome!",lower:"Redirecting You to our homepage...",redir:"../",background:"green"});
+                    var returnVar = {head:"Logged in Successfully!",top:"Welcome!",lower:"Redirecting You to our homepage...",redir:"../",background:"green"}
+                    returnVar = user.getLoggedData(res,req,returnVar);
+                    res.render("messageRedirLogged",returnVar);
                 });
 
 

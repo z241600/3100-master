@@ -204,8 +204,7 @@ module.exports = {
             if (scrypt.verifyKdfSync(new Buffer(userPWHash,'hex'), password_input)===true){
 
                 //login success
-
-                if(results[0]['TwoFactorAuth']==null)
+                if(results[0]['TwoFactorAuth']=="")
                 {
                     session.createSession(req,userID,res);
                 }
@@ -242,6 +241,12 @@ module.exports = {
         var session = require('express-session');
         req.session.destroy();
         res.render("messageRedir",{head:"Logout successful!",top:"bye!",lower:"We wish seeing you again!",redir:"../",background:"green"});
+    },
+    getLoggedData:function(res,req,returnVar,callbackl)
+    {
+        var session = require('express-session');
+        returnVar['userName'] =req.session.userName;
+        return returnVar;
     }
 
 };

@@ -7,7 +7,10 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 
 var Email = require('../Email');
+var item= require('../Item');
 var crypto = require('crypto');
+var multer = require('multer');
+var path = require("path");
 
 
 var sess = require("../session");
@@ -24,6 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //var user_id = req.body.VARNAME;
 
 var ssn;
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
@@ -36,7 +40,10 @@ router.get('/', function(req, res, next) {
         if(bool==true)
         {
             console.log("LOGGED");
-            res.render('indexLogged', {userName:req.session.userName});
+            returnVar = {};
+            returnVar = user.getLoggedData(res,req,returnVar);
+            res.render('indexLogged', returnVar);
+
         }else {
             console.log("NOT LOGGED");
             res.render('index', {});
@@ -46,11 +53,47 @@ router.get('/', function(req, res, next) {
 
 });
 
+
+router.get('/updateItem',function (req,res,next) {
+
+    var itemID = req.query.ID;
+
+        sess.checkSession(req,res,function(res,bool,req){
+            //console.log(bool);
+            if(bool==true)
+            {
+                item.retrieveUpdateItem(itemID,res,req);
+            }else {
+                res.render('messageRedir',{background:'red',head:"Ooops!",top:"You are not logged in",lower:"you will be redirected to our haome page." ,redir:"../"});
+            }
+        });
+});
+router.post('/updateItemAction',function (req,res,next) {
+
+    var itemName = req.body.itemName;
+    var price = req.body.Price;
+    var itemDesc = req.body.ItemDesc;
+    var itemId = req.body.itemId;
+
+    sess.checkSession(req,res,function(res,bool,req){
+        //console.log(bool);
+
+        if(bool==true)
+        {
+            item.updateItem(itemName,price,itemDesc,itemId,res,req);
+        }else {
+            res.render('messageRedir',{background:'red',head:"Ooops!",top:"You are not logged in",lower:"you will be redirected to our haome page." ,redir:"../"});
+        }
+    });
+
+});
+
 router.get('/user',function (req,res,next) {
 
   userDB.printDB(req,res);
 
 });
+
 router.get('/checkUserDup',function (req,res,next) {
     var userName = req.query.userName;
     user.checkUserDup(userName,res);
@@ -78,6 +121,11 @@ router.get('/enableTwoAuth',function (req,res,next) {
 router.get('/browseRecord', function (req,res,next){
     var itemId = req.body.itemId;
     browseRecord.init(res,itemId);
+});
+
+router.post('/disable2FA', function (req,res,next){
+    var userId = req.body.userId;
+    TwoFA.disable2FA(userId,res);
 });
 
 router.get('/simpleSearch', function (req,res,next){
@@ -137,7 +185,7 @@ router.get("/login",function (req,res,next){
 
 router.get("/item",function (req,res,next){
     //this one need some more followup
-    var itemID = req.body.ID;
+    var itemID = req.query.ID;
     item.retrieveItem(itemID,res,req);
 });
 
@@ -209,7 +257,36 @@ router.post('/createItem',function(req,res,next){
     var catId = req.body.catId;
     var price = req.body.price;
     var photoNum = req.body.photoNum;
+
     createItem.init(res,itemName,catId,price,photoNum,itemDesc);
+});
+
+
+var storage =   multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './public/images/item');
+    },
+    filename: function (req, file, callback) {
+        callback(null,file.fieldname + '-' + Date.now()+ path.extname(file.originalname));
+    }
+});
+var upload = multer({ storage : storage}).single('photo');
+
+router.post('/createItemAjax',upload,function(req,res,next){
+
+
+
+    var itemName = req.body.itemName;
+    var itemDesc = req.body.itemDesc;
+    var catId = req.body.cat;
+    var price = req.body.price;
+    //var photoNum = req.body.photoNum;
+
+    var photoNum =0;
+    var itemID=0;
+    itemID = item.createItem(itemName,catId,price,photoNum,itemDesc,catId,res,req);
+    console.log(itemID);
+
 });
 
 router.post('/verifyF2AToken',function (req,res,next) {
