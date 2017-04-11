@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="/stylesheets/main.css">
     <script>
         $( document ).ready(function() {
+            var userNameOK=0;
+            var emaileOK=0;
             $("#userName").on('input',function() {
                 //console.log("button pressed!");
                 $.ajax({url: "/checkUserDup?userName="+$("#userName").val(), success: function(result){
@@ -19,13 +21,47 @@
                     if(result.UserId==-1){
                         $("#output").attr("class","glyphicon glyphicon-ok");
                         console.log("ok!");
+                        userNameOK=1;
                     }
                     else{
                         $("#output").attr("class","glyphicon glyphicon-remove");
                       //  $("#output").html("<font color='red'> user name is used!</font>");
                         console.log("fail!");
+                        userNameOK=0;
+                    }
+                    if(userNameOK==1&&emaileOK==1)
+                    {
+                        $("#submit").prop("disabled",false);
+                    }
+                    else
+                    {
+                        $("#submit").prop("disabled",true);
                     }
                 }});
+            });
+            $("#email").on('input',function() {
+            $.ajax({url: "/checkEmailDup?userName="+$("#email").val(), success: function(result){
+                console.log(result);
+                if(result.Email==-1){
+                    $("#outputEmail").attr("class","glyphicon glyphicon-ok");
+                    console.log("ok!");
+                    emaileOK=1;
+                }
+                else{
+                    $("#outputEmail").attr("class","glyphicon glyphicon-remove");
+                    //  $("#output").html("<font color='red'> user name is used!</font>");
+                    console.log("fail!");
+                    emaileOK=0;
+                }
+                if(userNameOK==1&&emaileOK==1)
+                {
+                    $("#submit").prop("disabled",false);
+                }
+                else
+                {
+                    $("#submit").prop("disabled",true);
+                }
+            }});
             });
 
 
@@ -39,7 +75,7 @@
 
                     if (result.return) {
                         alert("Sign-up Successful! Redirecting you to our homepage:");
-                        window.location.href = "./";
+                        window.location.href = "../";
 
                     }
                     else {
@@ -72,7 +108,7 @@
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav">
           <!--<li class="active"><a href="#">Home</a></li>-->
-          <li><a href="#">Home</a></li>
+          <li><a href="../">Home</a></li>
           <li><a href="#">Page 1</a></li>
           <li><a href="#">Page 2</a></li>
           <li><a href="#">Page 3</a></li>
@@ -80,8 +116,8 @@
 
         <ul class="nav navbar-nav navbar-right">
           <li><a href="#">Messages<span class="badge">777</span> </a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li><a href="/SignUp/"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
         </ul>
         <form class="navbar-form navbar-right">
           <div class="form-group">
@@ -104,8 +140,11 @@
   <form class="form-horizontal">
     <div class="form-group">
       <label class="control-label col-sm-2" for="email">Email:</label>
-      <div class="col-sm-10">
+      <div class="col-sm-9">
         <input type="email" class="form-control" id="email" placeholder="Enter email">
+      </div>
+      <div class="col-sm-1">
+        <span id="outputEmail"></span>
       </div>
     </div>
     <div class="form-group">

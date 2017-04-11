@@ -23,7 +23,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(session({
+    secret: 'csci3100',
+    cookie: { maxAge: 60 * 100000 }
+}));
 app.use('/', index);
 app.use('/users', users);
 

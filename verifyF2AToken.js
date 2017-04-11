@@ -41,9 +41,6 @@ module.exports = {
             returnVar = {'return':0};
         }
 
-
-
-
         res.end(JSON.stringify(returnVar));
     }
 };
