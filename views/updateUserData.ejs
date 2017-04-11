@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>1 Stop Shop</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/main.css">
+    <script>
+        $( document ).ready(function() {
+
+
+
+            $("#submit").click(function(){
+                $.ajax({
+                url:"/updateUserDataAction/",
+                type:"POST",
+                data:{firstName:$("#firstName").val(),lastName:$("#lastName").val(),addr:$("#addr").val(),telNo:$("#tel").val(),location:$("#loc").val(),paypalMe:$("#PaypalMe").val(),UserId:$("#UserId").val()},
+                success:function (result) {
+                    console.log(result.return);
+
+                    if (result.return) {
+                        alert("Data changed Successfully! Redirecting you to our homepage:");
+                        window.location.href = "../";
+
+                    }
+                    else {
+                        alert("Something went wrong. Please try again!");
+                    }
+                }
+            });});
+            //click button then insert into DB
+        });
+
+
+    </script>
+
+  </head>
+  <style>
+
+  </style>
+
+
+<body>
+  <nav class="navbar navbar-default topNavBar">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="glyphicon glyphicon-menu-hamburger"></span>
+
+        </button>
+        <a class="navbar-brand" href="#">1StopShop</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <!--<li class="active"><a href="#">Home</a></li>-->
+          <li><a href="../">Home</a></li>
+          <li><a href="#">Page 1</a></li>
+          <li><a href="#">Page 2</a></li>
+          <li><a href="#">Page 3</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">Messages<span class="badge">777</span> </a></li>
+          <li><a href="/SignUp/"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
+        <form class="navbar-form navbar-right">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search for product">
+          </div>
+          <button type="submit" class="btn btn-default">Go!</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <div class="jumbotron text-center">
+    <h2>
+      Modify User Data<br>
+    </h2>
+    <h5>You can modify your data below:</h5>
+  </div>
+
+<div class="container containerTopPadding">
+  <form class="form-horizontal">
+
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="firstName">First Name:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-FirstName%>" id="firstName" placeholder="Enter First Name">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="lastName">Last Name:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-LastName%>" id="lastName" placeholder="Enter Last  Name">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="addr">Address:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-Addr%>" id="addr" placeholder="Enter Address">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="tel">Tel Number:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-TelNo%>" id="tel" placeholder="Enter Tel Number">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="loc">Location:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-Location%>" id="loc" placeholder="Enter Location">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="PaypalMe">PaypalMe Link::</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-PaypalMeLink%>" id="PaypalMe" placeholder="Enter Link to PaypalMe">
+      </div>
+    </div>
+    <input type="hidden" id="UserId" value="<%=UserId%>">
+
+
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button id="submit" type="button" class="btn btn-default">Submit</button>
+      </div>
+    </div>
+  </form>
+</div>
+  </body>
+</html>

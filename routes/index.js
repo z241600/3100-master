@@ -52,7 +52,35 @@ router.get('/', function(req, res, next) {
 
 
 });
+router.get('/updateUserData',function (req,res,next) {
+    sess.checkSession(req,res,function(res,bool,req){
+        console.log(bool);
+        if(bool==true)
+        {
+           // console.log("LOGGED");
+            user.updateUserData(res,req);
+        }else {
+            //console.log("NOT LOGGED");
+            res.render('messageRedir',{background:'red',head:"Ooops!",top:"You are not logged in",lower:"you will be redirected to our haome page." ,redir:"../"});
+        }
+    });
 
+});
+
+router.post("/updateUserDataAction",function(req,res,next){
+
+    var FirstName=req.body.firstName;
+    //console.log("marker");
+    var LastName=req.body.lastName;
+    var Addr=req.body.addr;
+    var TelNo=req.body.telNo;
+    var Location=req.body.location;
+    var PaypalMeLink=req.body.paypalMe;
+    var UserId=req.body.UserId;
+
+    user.updateUserDataAction(FirstName,LastName,Addr,TelNo,Location,PaypalMeLink,UserId,res,req);
+
+});
 
 router.get('/updateItem',function (req,res,next) {
 

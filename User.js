@@ -233,9 +233,80 @@ module.exports = {
 
 
 
-    updateUserData:function (UserID,json)
+    updateUserData:function (res,req)
     {
-        //to interface with the DB to update user's data
+        var mysql = require("mysql");
+        var he = require("he");
+        var session = require('express-session');
+        userID = req.session.userId;
+
+        sql = "SELECT * FROM userdata WHERE UserID='"+userID+"'";
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+        console.log(sql);
+        connection.query(sql, function (error, results) {
+            if(error)
+            {
+                return 0;
+            }
+            else
+            {
+                FirstNameVar = results[0]['FirstName'];
+                LastNameVar = results[0]['LastName'];
+                AddrVar = results[0]['Addr'];
+                TelNoVar = results[0]['TelNo'];
+                LocationVar = results[0]['Location'];
+                PaypalMeLinkVar = results[0]['PaypalMeLink'];
+                returnVar = {FirstName:FirstNameVar,LastName:LastNameVar,Addr:AddrVar,TelNo:TelNoVar,
+                    Location:LocationVar,PaypalMeLink:PaypalMeLinkVar,UserId:userID};
+
+                res.render('updateUserData', returnVar);
+            }
+
+        });
+
+    },
+    updateUserDataAction:function(FirstName,LastName,Addr,TelNo,Location,PaypalMeLink,UserId,res,req){
+        var mysql = require("mysql");
+        var he = require("he");
+        //var session = require('express-session');
+        FirstName = he.encode(FirstName);
+        LastName = he.encode(LastName);
+        Addr = he.encode(Addr);
+        TelNo = he.encode(TelNo);
+        Location = he.encode(Location);
+        sql ="UPDATE userdata SET LastName = '"+LastName+"', FirstName =  '"+FirstName+"', Addr = '"+Addr+"', TelNo = '"+TelNo+"', Location = '"+Location+"', PaypalMeLink ='"+PaypalMeLink+"'WHERE UserID = "+UserId;
+        console.log(sql);
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+        //console.log(sql);
+        connection.query(sql, function (error, results) {
+        if(error)
+        {
+            console.log(error);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            returnVar = {'return':0};
+            res.end(JSON.stringify(returnVar));
+        }
+        else{
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            returnVar = {'return':1};
+            res.end(JSON.stringify(returnVar));
+        }
+        });
+
+
+
     },
     LogoutUser:function(res,req) {
         var session = require('express-session');
