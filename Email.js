@@ -4,10 +4,31 @@
 module.exports = {
 
 
-    SendAuthEmail: function (Email) {
+    SendAuthEmail: function (Email,userID) {
 
         //send email to user to verify the email address
         var nodemailer = require('nodemailer');
+
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+
+        //var hex = token.toString('hex');
+        var crypto = require('crypto');
+
+        const buff =  crypto.randomBytes(10);
+
+        const token = buff.toString('hex');
+
+        console.log(token);
+
+        var htmltemplate = "<p>Please click the following link to verify your email address. This link is one-time use only</p> <a href>";
+
+        htmltemplate += "localhost:3000/" + token+ "</a>";
 
         var transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -18,21 +39,30 @@ module.exports = {
         });
 
         var mailOptions = {
-            from: '"This Pile of Shit 👻" <noreply_shity@csci3100.com>',
+            from: '"Please Do not reply to this verification email" <noreply_1stopshop@csci3100.com>',
             to: Email,
-            subject: 'Verification Email from CSCI3100 💩',
-            text: 'Please click the following link to verify your email address.\n',
-            html: '<a href>www.google.com</a>'
+            subject: 'Verification Email from 1StopShop',
+            text: 'Please click the following link to verify your email address. This link is one-time use only',
+            html: htmltemplate
 
         };
 
-        ransporter.sendMail(mailOptions, function(error, info){
+        transporter.sendMail(mailOptions, function(error, info){
             if (error) {
                 return console.log(error);
             }
             console.log('Message %s sent: %s', info.messageId, info.response);
         });
 
+        const Acctype = "NoAuth";
+        var sql = "UPDATE userdata SET 'AccType' = '"+Acctype+"' 'AuthToken' = '"+token+"' WHERE UserID="+userID;
+
+        connection.query(sql, function (error, results) {
+            if (error){
+                //console.log(error.toString());
+            }
+                console.log("Saved Acctype and AuthToken");
+        });
     },
     AuthEmailToken: function (UserID, Token) {
         //Authendicate user with the provided token, and activating the user's account

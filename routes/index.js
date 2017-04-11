@@ -6,6 +6,7 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var Email = require('../Email');
+var crypto = require('crypto');
 
 
 var app = express();
@@ -26,7 +27,8 @@ app.use(session({
 router.get('/', function(req, res, next) {
 
     res.render('index', { title: 'Express' });
-    Email.SendAuthEmail('asdkevinasd@gamil.com');
+
+    Email.SendAuthEmail('ykeiwan1996@yahoo.com.hk');
 
 });
 

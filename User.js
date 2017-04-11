@@ -107,7 +107,7 @@ module.exports = {
         });
 
         //Using sha1 algo for hashing and 16 byte long salt with 8 iterations
-        sql = "SELECT UserId,PWHash FROM userlogindata WHERE email='"+UserName_input+"'";
+        var sql = "SELECT UserId,PWHash FROM userlogindata WHERE email='"+UserName_input+"'";
         console.log(sql);
         connection.query(sql, function (error, results) {
             if (error){
