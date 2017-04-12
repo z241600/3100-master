@@ -158,7 +158,7 @@ router.get("/createItem",function (req,res,next){
     });
 });
 router.get("/inputTwoFactorToken",function (req,res,next) {
-res.render("input2FAToken",{});
+    res.render("input2FAToken",{});
 });
 
 
