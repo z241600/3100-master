@@ -113,7 +113,7 @@ module.exports = {
                         if (error) {
                             return console.log(error);
                         }
-                        Email.SendBuyEmail(sellerID, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
+                        Email.SendBuyEmail(sellerEmail, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
                         console.log("Email sent");
                         var sql5 ="INSERT INTO History (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
                         connection.query(sql5, function (error) {
