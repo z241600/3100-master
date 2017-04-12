@@ -7,6 +7,7 @@ var search = require("../search");
 var router = express.Router();
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var message = require("../Message");
 
 var Email = require('../Email');
 var item= require('../Item');
@@ -71,6 +72,31 @@ router.get('/updateUserData',function (req,res,next) {
 
 });
 
+router.get('/message',function (req,res,next) {
+    sess.checkSession(req,res,function(res,bool,req){
+        console.log(bool);
+        if(bool==true)
+        {
+            var count =0;
+            // console.log("LOGGED");
+            message.retrievePM(res,req,count);
+        }else {
+            //console.log("NOT LOGGED");
+            res.render('messageRedir',{background:'red',head:"Ooops!",top:"You are not logged in",lower:"you will be redirected to our haome page." ,redir:"../"});
+        }
+    });
+
+});
+
+router.post("/postPM",function(req,res,next) {
+
+    var receiving = req.body.senderId;
+    var msg = req.body.msg;
+    var userId = req.body.userId;
+    //userId is the one sending , senderId is the one receiving
+    message.sendPM(res,req,userId,receiving,msg);
+
+});
 router.post("/updateUserDataAction",function(req,res,next){
 
     var FirstName=req.body.firstName;
@@ -162,7 +188,17 @@ router.post('/disable2FA', function (req,res,next){
 
 router.get('/Search', function (req,res,next){
     var targetName = req.query.name;
-    search.simpleSearch(res,req,targetName);
+    var cat = req.query.cat;
+    console.log(!targetName);
+    if(targetName&&cat){
+        search.searchByNameAndCat(res,req,targetName,cat);
+    }
+    if(targetName) {
+        search.simpleSearch(res, req, targetName);
+    }
+    if(cat) {
+        search.searchByCat(res,req,cat);
+    }
 });
 
 router.get('/advanceSearch', function (req,res,next){
