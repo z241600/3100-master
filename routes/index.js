@@ -297,7 +297,7 @@ router.get('/idSearch', function (req,res,next) {
             console.log(bool);
             if (bool == true) {
                 //console.log("LOGGED");
-                res.render("additem", {});
+                res.render("additem", {userName :req.session.userName});
             } else {
                 //console.log("NOT LOGGED");
                 res.render('messageRedir', {

@@ -52,7 +52,7 @@ module.exports = {
                         returnVar = results[0]['LAST_INSERT_ID()'] ;
                         console.log(results);
                         console.log(returnVar);
-
+                        res.render("messageRedirLogged",{head:"Success! Item created successfully",top:"Redirecting you to the page...",lower:"",background:"green",redir:"./item?ID="+ results[0]['LAST_INSERT_ID()'],userName:req.session.userName});
 
                     }
 
