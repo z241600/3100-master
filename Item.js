@@ -67,7 +67,7 @@ module.exports = {
     {
         //Perform back-end tasks (such as modifying the Activity Ind),
         //serve the paypal information to the buyer, and notifying the seller about the trade.
-        var Email= require('../Email');
+        var Email= require('./Email');
         var mysql = require("mysql");
 
         var sql = "SELECT SellerID, Price FROM ItemDesc WHERE ItemID=" + ItemID;
@@ -81,44 +81,53 @@ module.exports = {
 
 
 
-        var connection = mysql.createConnection({
+        var connection_item = mysql.createConnection({
             "host": "localhost",
             "port": 3306,
             "user": "root",
             "password": "csci3100",
             "database": "item"
         });
-        connection.query(sql, function (error,result){
+
+        var connection_user = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "item"
+        });
+
+        connection_item.query(sql, function (error,result){
             if (error) {
                 return console.log(error);
             }
             sellerID=result[0]['SellerID'];
             itemPrice=result[0]['Price'];
             var sql2 = "SELECT Email FROM UserLoginData WHERE UserID=" + sellerID;//seller email, paypal link
-            connection.query(sql2, function (error,result){
+            connection_user.query(sql2, function (error,result){
                 if (error) {
                     return console.log(error);
                 }
                 sellerEmail = result[0]['Email'];
                 var sql3 = "SELECT Email FROM UserLoginData WHERE UserID=" + buyerID;//buyer email
-                connection.query(sql3, function (error,result) {
+                connection_user.query(sql3, function (error,result) {
                     if (error) {
                         return console.log(error);
                     }
                     buyerEmail=result[0]['Email'];
                     var sql4 = "UPDATE ItemDesc SET ActivityInd = '"+ActivityInd+"' WHERE ItemID="+ItemID;//update
-                    connection.query(sql4, function (error,result) {
+                    connection_item.query(sql4, function (error,result) {
                         if (error) {
                             return console.log(error);
                         }
                         var sql5 = "SELECT PaypalMeLink FROM UserData WHERE UserID=" + sellerID;
-                        connection.query(sql5,function(error,result){
+                        connection_user.query(sql5,function(error,result){
                             if (error) {
                                 return console.log(error);
                             }
                             PaypalMeLink = result[0]['PaypalMeLink'];
                             var sql6 = "SELECT PaypalName FROM UserData WHERE UserID=" + buyerID;
-                            connection.query(sql6,function(error,result){
+                            connection_user.query(sql6,function(error,result){
                                 if (error) {
                                     return console.log(error);
                                 }
@@ -126,7 +135,7 @@ module.exports = {
                                 Email.SendBuyEmail(sellerEmail, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
                                 console.log("Email sent");
                                 var sql7 ="INSERT INTO History (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
-                                connection.query(sql7, function (error) {
+                                connection_user.query(sql7, function (error) {
                                     if (error) {
                                         return console.log(error);
                                     }
@@ -226,6 +235,7 @@ module.exports = {
 
     });
     },
+
     retrieveItem:function(ItemID,res,req) {
         var mysql = require("mysql");
         var session = require("express-session");
@@ -281,7 +291,7 @@ module.exports = {
                     var buttonHtml = "";
                 }
 
-                if (ActivityInd == "U") {
+                if (ActivityInd == "U" && SellerID != req.session.userId) {
                     res.render("message", {
                         head: "Oops! The item you are looking is unlisted by our staff.",
                         top: "We are sorry for any inconvience caused.",
