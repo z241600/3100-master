@@ -27,21 +27,7 @@ var ssn;
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-    ssn = req.session;
-    console.log(req.sessionID);
-    console.log(ssn.userId);
-    console.log(ssn.userName);
-    sess.checkSession(req,res,function(res,bool,req){
-        console.log(bool);
-        if(bool==true)
-        {
-            console.log("LOGGED");
-            res.render('indexLogged', {userName:req.session.userName});
-        }else {
-            console.log("NOT LOGGED");
-            res.render('index', {});
-        }
-    });
+    Email.SendBuyEmail("asdkevinasd@gmail.com", 3333 , "asdkevinasd@gmail.com", "www.paypal.me/HiuFung/", 123 , "HiuFung");
 
 
 });

@@ -67,8 +67,6 @@ module.exports = {
     {
         //Perform back-end tasks (such as modifying the Activity Ind),
         //serve the paypal information to the buyer, and notifying the seller about the trade.
-      //Perform back-end tasks (such as modifying the Activity Ind),
-        //serve the paypal information to the buyer, and notifying the seller about the trade.
         var Email= require('../Email');
         var mysql = require("mysql");
 
@@ -130,6 +128,9 @@ module.exports = {
         });
 
     },
+
+
+
     updateItem:function (itemName,price,itemDesc,itemId,res,req) {
         //update the item's info, given the ID and the data needed in the JSON.
         var mysql = require("mysql");
