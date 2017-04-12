@@ -17,6 +17,7 @@
         {
             $(".postSubCmtButton").prop("disabled",true);
             $(".subCmtText").prop("disabled",true);
+            $("#buyButton").prop("disabled",true);
         }
 
 
@@ -32,6 +33,28 @@
 
                     if (result.return) {
                         alert("Comment Posted! Refreshing...:");
+                        window.location.href = "./";
+
+                    }
+                    else {
+                        alert("Something went wrong. Please try again!");
+                    }
+                }
+            });
+        });
+
+        $("#buyButton").click(function() {
+
+
+            $.ajax({
+                url:"/buyItem/",
+                type:"POST",
+                data:{buyerID:$("#userId").val(),ItemID:$("#itemId").val()},
+                success:function (result) {
+                    console.log(result.return);
+
+                    if (result.return) {
+                        alert("Item Bought! Refreshing...:");
                         window.location.href = "./";
 
                     }
@@ -130,6 +153,7 @@
                     <%-CatName%>
                 </h3>
                 <%-button%>
+
             </div>
             </div>
         </div>
