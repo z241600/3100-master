@@ -112,7 +112,14 @@ module.exports = {
                             return console.log(error);
                         }
                         Email.SendBuyEmail(sellerID, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
-                        return console.log("Email sent");
+                        console.log("Email sent");
+                        var sql5 ="INSERT INTO History (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
+                        connection.query(sql5, function (error) {
+                            if (error){
+                                return console.log(error);
+                            }
+                            return console.log("History added");
+                        });
                     });
                 });
             });
