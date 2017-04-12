@@ -68,8 +68,78 @@ module.exports = {
     },
     updateItem:function (ItemID,json) {
         //update the item's info, given the ID and the data needed in the JSON.
+        //to interface with the DB to update user's data
+
+
+        var mysql = require("mysql");
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
+        });
+        var data = {"userName": "", "UserPassword": "", "email": "", "lastName": "", "firstName":"","addr":"", "telNo":"", "location":"", "UserID":""};
+        var parsedData = json.parse(data);
+
+        var userName = parsedData.userName;
+        var UserPassword = parsedData.UserPassword;
+        var email = parsedData.email;
+        var lastName = parsedData.lastName;
+        var firstName = parsedData.firstName;
+        var addr = parsedData.addr;
+        var telNo = parsedData.telNo;
+        var location = parsedData.location;
+
+
+
+
+
+        sql_stmt = "UPDATE Users SET userName = ?,UserPassword = ?,email = ?,lastName = ?, firstName = ?, addr = ?, telNo = ?, location = ?, WHERE UserID = ?";
+
+        var values = [userName, UserPassword, email, lastName, firstName, addr, telNo, location, UserID];
+
+        sql_stmt = mysql.format(sql_stmt, values);
+
+        connection.query(sql_stmt, function (error) {
+            if (error) {
+                console.log('The following error occured while trying to insert a new record ' + error.message);
+            }
+            console.log();
+            console.log('Updated User information with id ' + id);
+        })
+
+
 
     },
+
+    searchItem: function (req,res) {
+        var mysql = require("mysql");
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "item"
+        });
+
+
+
+
+            connection.query('SELECT item from TABLE_NAME where item like "%' + req.query.key + '%"',
+                function (err, rows, fields) {
+                    if (err) throw err;
+                    var data = [];
+                    for (i = 0; i < rows.length; i++) {
+                        data.push(rows[i].first_name);
+                    }
+                    res.end(JSON.stringify(data));
+                });
+
+
+    },
+
+
     retrieveItem:function(ItemID,res,req){
         var mysql = require("mysql");
 
