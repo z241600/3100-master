@@ -3,7 +3,7 @@
  */
 module.exports = {
 
-    generate2FAToken: function (res,UserId){
+    generate2FAToken: function (res,UserId,req){
 
         var speakeasy = require('speakeasy');
         var secret = speakeasy.generateSecret({length: 20});
@@ -29,6 +29,7 @@ module.exports = {
                 console.log(secret.base32); // secret of length 20
                 console.log(UserId);
                 returnVar = {'url': secret.otpauth_url, 'secretTxt': secret.base32, userId: UserId};
+                returnVar['userName'] = req.session.userName;
                 res.render('2FA', returnVar);
             }
             else {

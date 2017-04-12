@@ -10,6 +10,68 @@
     <link rel="stylesheet" href="/stylesheets/main.css">
 </head>
 
+<script>
+    $( document ).ready(function() {
+
+        if($("#postMainCmtButton").prop("disabled")==true)
+        {
+            $(".postSubCmtButton").prop("disabled",true);
+            $(".subCmtText").prop("disabled",true);
+        }
+
+
+        $(".postSubCmtButton").click(function() {
+            var CmtID = $(this).data("value");
+            console.log(CmtID);
+            $.ajax({
+                url:"/cmtSub/",
+                type:"POST",
+                data:{UserId:$("#userId").val(),cmtMsg:$("#CmtID-"+CmtID).val(),cmtID:CmtID},
+                success:function (result) {
+                    console.log(result.return);
+
+                    if (result.return) {
+                        alert("Comment Posted! Refreshing...:");
+                        window.location.href = "./";
+
+                    }
+                    else {
+                        alert("Something went wrong. Please try again!");
+                    }
+                }
+            });
+        });
+
+
+
+        $("#postMainCmtButton").click(function() {
+            $.ajax({
+                url:"/cmtMain/",
+                type:"POST",
+                data:{UserId:$("#userId").val(),cmtMsg:$("#postMainCmt").val(),itemId:$("#itemId").val()},
+                success:function (result) {
+                    console.log(result.return);
+
+                    if (result.return) {
+                        alert("Comment Posted! Refreshing...:");
+                        window.location.href = "./";
+
+                    }
+                    else {
+                        alert("Something went wrong. Please try again!");
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+<style>
+    .cmtMainBlock{
+        margin-top: 10px;
+        margin-bottom:0;
+    }
+</style>
 <body>
 
 <nav class="navbar navbar-default topNavBar">
@@ -78,11 +140,34 @@
             <br>
             <br>
             <h4><%-ItemDesc%></h4>
-            <br>
-            <br>
+
         </div>
     </div>
 </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+            <%-html%>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="form-group">
+
+            <div class="col-sm-8">
+                <input type="text"  name="email" class="form-control" id="postMainCmt" placeholder="Write Comment..." <%=enable%>>
+            </div>
+            <div class="col-sm-2">
+                <input type="button" class="btn" id="postMainCmtButton" value="post!"  <%=enable%>>
+                <input type="hidden"  id="userId" value="<%=userId%>">
+                <input type="hidden"  id="itemId" value="<%=ItemID%>">
+            </div>
+
+        </div>
+
+    </div>
+    <br>
 </div>
 <div class="container-fluid text-center footerBar">
     Copyright xxx.ltd.

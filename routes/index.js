@@ -1,7 +1,9 @@
 var express = require('express');
 var user = require('../User');
 var TwoFA = require('../2FA');
+var comment = require('../comment');
 var userDB = require("./userDB");
+var search = require("../search");
 var router = express.Router();
 var bodyParser = require('body-parser');
 var session = require('express-session');
@@ -42,11 +44,13 @@ router.get('/', function(req, res, next) {
             console.log("LOGGED");
             returnVar = {};
             returnVar = user.getLoggedData(res,req,returnVar);
-            res.render('indexLogged', returnVar);
+            //res.render('indexLogged', returnVar);
+            item.indexItem(req,res,bool,returnVar);
 
         }else {
             console.log("NOT LOGGED");
-            res.render('index', {});
+            //res.render('index', {});
+            item.indexItem(req,res,bool);
         }
     });
 
@@ -138,7 +142,7 @@ router.get('/enableTwoAuth',function (req,res,next) {
         if(bool==true)
         {
             //console.log("LOGGED");
-            TwoFA.generate2FAToken(res,req.session.userId);
+            TwoFA.generate2FAToken(res,req.session.userId,req);
         }else {
             //console.log("NOT LOGGED");
             res.render('messageRedir',{background:'red',head:"Ooops!",top:"You are not logged in",lower:"you will be redirected to our haome page." ,redir:"../"});
@@ -156,9 +160,9 @@ router.post('/disable2FA', function (req,res,next){
     TwoFA.disable2FA(userId,res);
 });
 
-router.get('/simpleSearch', function (req,res,next){
-    var targetName = req.body.targetName;
-    simpleSearch.init(res,targetName);
+router.get('/Search', function (req,res,next){
+    var targetName = req.query.name;
+    search.simpleSearch(res,req,targetName);
 });
 
 router.get('/advanceSearch', function (req,res,next){
@@ -235,6 +239,31 @@ router.get("/createItem",function (req,res,next){
 });
 router.get("/inputTwoFactorToken",function (req,res,next) {
 res.render("input2FAToken",{});
+});
+
+
+
+router.post("/cmtSub",function (req,res,next) {
+
+    var UserId = req.body.UserId;
+    var cmtMsg = req.body.cmtMsg;
+    var cmtID = req.body.cmtID;
+    console.log(UserId);
+    console.log(cmtMsg);
+    console.log(cmtID);
+
+
+    comment.postSubComment(UserId,cmtMsg,cmtID,req,res);
+});
+
+
+router.post("/cmtMain",function (req,res,next) {
+
+    var UserId = req.body.UserId;
+    var cmtMsg = req.body.cmtMsg;
+    var itemId = req.body.itemId;
+
+        comment.postMainComment(UserId,cmtMsg,itemId,req,res);
 });
 
 
