@@ -116,7 +116,7 @@ module.exports = {
 
         var htmltemplate = "<p>Please click the following link to make the payment via PayPal. You would need to login to your Paypal for this to work. The amount has been set for you. Please do not change that or the seller might not deliver the product.</p><br> <a href='";
 
-        htmltemplate += Paylink + "/"+ Price +  "'>Click Here to Pay:</a>" ;
+        htmltemplate += Paylink + "/"+ Price +  "'>Click Here to Pay</a>" ;
 
         console.log(htmltemplate);
 
@@ -146,7 +146,7 @@ module.exports = {
 
         htmltemplate = "<p>Someone want to buy your product! Please check your Paypal invoice for transaction. Please contact "+ BuyName +" via email: "+ BuyEmail + " or our PM system. After delivery is made, please update the item as 'Shipped'.</p><br> <a href='";
 
-        htmltemplate += "http://localhost:3000/item?ID=" + ItemID +  "'>Click Here to view the item:</a>" ;
+        htmltemplate += "http://localhost:3000/item?ID=" + ItemID +  "'>Click Here to view the item</a>" ;
 
         mailOptions = {
             from: '"Please Do not reply to this email" <noreply_1stopshop@csci3100.com>',

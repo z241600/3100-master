@@ -67,8 +67,6 @@ module.exports = {
     {
         //Perform back-end tasks (such as modifying the Activity Ind),
         //serve the paypal information to the buyer, and notifying the seller about the trade.
-      //Perform back-end tasks (such as modifying the Activity Ind),
-        //serve the paypal information to the buyer, and notifying the seller about the trade.
         var Email= require('../Email');
         var mysql = require("mysql");
 
@@ -116,13 +114,23 @@ module.exports = {
                             return console.log(error);
                         }
                         Email.SendBuyEmail(sellerID, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
-                        return console.log("Email sent");
+                        console.log("Email sent");
+                        var sql5 ="INSERT INTO History (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
+                        connection.query(sql5, function (error) {
+                            if (error){
+                                return console.log(error);
+                            }
+                            return console.log("History added");
+                        });
                     });
                 });
             });
         });
 
     },
+
+
+
     updateItem:function (itemName,price,itemDesc,itemId,res,req) {
         //update the item's info, given the ID and the data needed in the JSON.
         var mysql = require("mysql");

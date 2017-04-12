@@ -181,6 +181,11 @@ router.get('/browseRecord', function (req,res,next){
     browseRecord.init(res,itemId);
 });
 
+
+router.get('/idSearch', function (req,res,next){
+    var targetID = req.body.targetID;
+    idSearch.init(res,targetID);
+
 router.post('/disable2FA', function (req,res,next){
     var userId = req.body.userId;
     TwoFA.disable2FA(userId,res);
@@ -188,6 +193,7 @@ router.post('/disable2FA', function (req,res,next){
 
 router.get('/Search', function (req,res,next){
     var targetName = req.query.name;
+
     var cat = req.query.cat;
     console.log(!targetName);
     if(targetName&&cat){
@@ -199,23 +205,39 @@ router.get('/Search', function (req,res,next){
     if(cat) {
         search.searchByCat(res,req,cat);
     }
+
 });
 
-router.get('/advanceSearch', function (req,res,next){
-    var targetName = req.body.targetName;
-    var priceRange = req.body.priceRange;
-    var catalogId = req.body.catalogId;
-    advanceSearch.init(res,targetName,priceRange,catalogId);
+router.get('/priceSearch', function (req,res,next){
+    var priceUpperLimit = req.body.priceUpperLimit;
+    var priceLowerLimit = req.body.priceLowerLimit;
+    priceSearch.init(res,priceUpperLimit, priceLowerLimit);
 });
 
-router.get('/simpleSearch', function (req,res,next){
+router.get('/categorySearch', function (req,res,next){
+    var categoryName = req.body.categoryName;
+    categorySearch.init(res,categoryName);
+});
+
+router.get('/keywordSearch', function (req,res,next){
     var targetName = req.body.targetName;
-    simpleSearch.init(res,targetName);
+    keywordSearch.init(res,targetName);
+});
+
+router.get('history', function (req,res,next) {
+    var userID = req.body.userID;
+    history.init(res,userID);
+});
+
+router.get('askForRecommend', function (req,res,next) {
+    var userID = req.body.userID;
+    askForRecommend.init(res,userID);
 });
 
 router.get('/recommend',function (req,res,next){
     //this one need some more followup
-    recommend.init(res);
+    var userID = req.body.userID;
+    recommend.init(res,userID);
 });
 
 router.get('/SignUp',function (req,res,next){
