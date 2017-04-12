@@ -63,7 +63,7 @@ module.exports = {
         });
 
     },
-    BuyItem:function(ItemID,buyerID)
+    BuyItem:function(ItemID,buyerID,res,req)
     {
         //Perform back-end tasks (such as modifying the Activity Ind),
         //serve the paypal information to the buyer, and notifying the seller about the trade.
@@ -81,7 +81,7 @@ module.exports = {
 
         console.log(sql);
 
-        var connection_item = mysql.createConnection({
+        var connection = mysql.createConnection({
             "host": "localhost",
             "port": 3306,
             "user": "root",
@@ -322,7 +322,7 @@ module.exports = {
                     var buttonHtml = "<input type='button' value='Update Item Info' onclick='window.location.href =\"updateItem?ID=" + ItemID + "\"'>";
                 }
                 else {
-                    var buttonHtml = "";
+                    var buttonHtml = "<input type='button' class='btn' id='buyButton' value='Buy this item'>'";
                 }
 
                 if (ActivityInd == "U" && SellerID != req.session.userId) {
@@ -514,6 +514,9 @@ module.exports = {
                             if (bool != true) {
                                 //console.log("LOGGED");
                                 returnVar['enable'] = "disabled";
+                                returnVar['html'] = htmlString;
+                                returnVar['userId'] = -1;
+                                res.render("item", returnVar);
                             }
                             else
                             {
@@ -521,12 +524,14 @@ module.exports = {
                                 returnVar['userId'] = req.session.userId;
 
                                 returnVar['enable'] = "";
+
+                                console.log(htmlString);
+                                returnVar['html'] = htmlString;
+                                returnVar['userId'] = req.session.userId;
+                                returnVar['userName'] = req.session.userName;
+                                res.render("item", returnVar);
                             }
 
-                            console.log(htmlString);
-                            returnVar['html'] = htmlString;
-                            returnVar['userId'] = req.session.userId;
-                            res.render("item", returnVar);
 
                             return 0;
                         });
@@ -616,7 +621,7 @@ module.exports = {
         });
         var userID = req.session.userId;
 
-        console.log(userId);
+        console.log(userID);
         var htmlString="";
         var sql="SELECT * from ItemDesc where BuyerID=" + userID;
         connectionItem.query(sql, function (error, results) {
@@ -645,16 +650,10 @@ module.exports = {
 
                         sess.checkSession(req,res,function(res,bool,req){
 
-                            console.log(bool);
-                            if(bool==true)
-                            {
 
-                                res.render("searchLogged",{html:htmlString,userName:req.session.userName});
+                                res.render("history",{html:htmlString,userName:req.session.userName});
 
-                            }else {
-                                //console.log("NOT LOGGED");
-                                res.render("search",{html:htmlString});
-                            }
+
                         });
 
 

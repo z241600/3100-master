@@ -72,6 +72,22 @@ router.get('/updateUserData',function (req,res,next) {
 
 });
 
+router.get('/history',function (req,res,next) {
+    sess.checkSession(req,res,function(res,bool,req){
+        console.log(bool);
+        if(bool==true)
+        {
+            item.historyDisplay(res,req);
+            // console.log("LOGGED");
+            //user.updateUserData(res,req);
+        }else {
+            //console.log("NOT LOGGED");
+            res.render('messageRedir',{background:'red',head:"Ooops!",top:"You are not logged in",lower:"you will be redirected to our haome page." ,redir:"../"});
+        }
+    });
+
+});
+
 router.get('/message',function (req,res,next) {
     sess.checkSession(req,res,function(res,bool,req){
         console.log(bool);
@@ -222,11 +238,6 @@ router.get('/idSearch', function (req,res,next) {
     router.get('/keywordSearch', function (req, res, next) {
         var targetName = req.body.targetName;
         keywordSearch.init(res, targetName);
-    });
-
-    router.get('history', function (req, res, next) {
-        var userID = req.body.userID;
-        history.init(res, userID);
     });
 
     router.get('askForRecommend', function (req, res, next) {
