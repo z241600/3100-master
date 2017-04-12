@@ -93,40 +93,51 @@ module.exports = {
                 return console.log(error);
             }
             sellerID=result[0]['SellerID'];
-            itemPrice=result[0]['itemPrice'];
-            var sql2 = "SELECT Email, PaypalMeLink FROM UserData WHERE UserID=" + sellerID;//seller email, paypal link
+            itemPrice=result[0]['Price'];
+            var sql2 = "SELECT Email FROM UserLoginData WHERE UserID=" + sellerID;//seller email, paypal link
             connection.query(sql2, function (error,result){
                 if (error) {
                     return console.log(error);
                 }
                 sellerEmail = result[0]['Email'];
-                PaypalMeLink= result[0]['PaypalMeLink'];
-                var sql3 = "SELECT Email, PaypalName FROM UserData WHERE UserID=" + buyerID;//buyer email
+                var sql3 = "SELECT Email FROM UserLoginData WHERE UserID=" + buyerID;//buyer email
                 connection.query(sql3, function (error,result) {
                     if (error) {
                         return console.log(error);
                     }
-                    buyerName=result[0]['PaypalName'];
                     buyerEmail=result[0]['Email'];
                     var sql4 = "UPDATE ItemDesc SET ActivityInd = '"+ActivityInd+"' WHERE ItemID="+ItemID;//update
                     connection.query(sql4, function (error,result) {
                         if (error) {
                             return console.log(error);
                         }
-                        Email.SendBuyEmail(sellerEmail, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
-                        console.log("Email sent");
-                        var sql5 ="INSERT INTO History (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
-                        connection.query(sql5, function (error) {
-                            if (error){
+                        var sql5 = "SELECT PaypalMeLink FROM UserData WHERE UserID=" + sellerID;
+                        connection.query(sql5,function(error,result){
+                            if (error) {
                                 return console.log(error);
                             }
-                            return console.log("History added");
+                            PaypalMeLink = result[0]['PaypalMeLink'];
+                            var sql6 = "SELECT PaypalName FROM UserData WHERE UserID=" + buyerID;
+                            connection.query(sql6,function(error,result){
+                                if (error) {
+                                    return console.log(error);
+                                }
+                                buyerName = result[0]['PaypalName'];
+                                Email.SendBuyEmail(sellerEmail, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
+                                console.log("Email sent");
+                                var sql7 ="INSERT INTO History (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
+                                connection.query(sql7, function (error) {
+                                    if (error) {
+                                        return console.log(error);
+                                    }
+                                    return console.log("History added");
+                                });
+                            });
                         });
                     });
                 });
             });
         });
-
     },
 
 
