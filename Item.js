@@ -52,7 +52,7 @@ module.exports = {
                         returnVar = results[0]['LAST_INSERT_ID()'] ;
                         console.log(results);
                         console.log(returnVar);
-
+                        res.render("messageRedirLogged",{head:"Success! Item created successfully",top:"Redirecting you to the page...",lower:"",background:"green",redir:"./item?ID="+ results[0]['LAST_INSERT_ID()'],userName:req.session.userName});
 
                     }
 
@@ -79,7 +79,7 @@ module.exports = {
         var sellerEmail;
         var buyerEmail;
 
-
+        console.log(sql);
 
         var connection_item = mysql.createConnection({
             "host": "localhost",
@@ -89,56 +89,90 @@ module.exports = {
             "database": "item"
         });
 
-        var connection_user = mysql.createConnection({
+        var userconnection = mysql.createConnection({
+
             "host": "localhost",
             "port": 3306,
             "user": "root",
             "password": "csci3100",
-            "database": "item"
-        });
 
-        connection_item.query(sql, function (error,result){
+            "database": "user"
+        });
+        connection.query(sql, function (error,result){
+
             if (error) {
                 return console.log(error);
             }
             sellerID=result[0]['SellerID'];
             itemPrice=result[0]['Price'];
             var sql2 = "SELECT Email FROM UserLoginData WHERE UserID=" + sellerID;//seller email, paypal link
-            connection_user.query(sql2, function (error,result){
+
+            console.log(sql2);
+           // var sql2 = "SELECT Email, PaypalMeLink FROM UserData WHERE UserID=" + sellerID;//seller email, paypal link
+
+            userconnection.query(sql2, function (error,result){
+
                 if (error) {
                     return console.log(error);
                 }
                 sellerEmail = result[0]['Email'];
                 var sql3 = "SELECT Email FROM UserLoginData WHERE UserID=" + buyerID;//buyer email
-                connection_user.query(sql3, function (error,result) {
+
+                console.log(sql3);
+                userconnection.query(sql3, function (error,result) {
+
                     if (error) {
                         return console.log(error);
                     }
                     buyerEmail=result[0]['Email'];
+
                     var sql4 = "UPDATE ItemDesc SET ActivityInd = '"+ActivityInd+"', BuyerID ="+buyerID+" WHERE ItemID="+ItemID;//update
-                    connection_item.query(sql4, function (error,result) {
+                    console.log(sql4);
+                    connection.query(sql4, function (error,result) {
+
                         if (error) {
                             return console.log(error);
                         }
                         var sql5 = "SELECT PaypalMeLink FROM UserData WHERE UserID=" + sellerID;
-                        connection_user.query(sql5,function(error,result){
+
+                        console.log(sql5);
+                        userconnection.query(sql5,function(error,result){
+
                             if (error) {
+                                res.writeHead(200, { 'Content-Type': 'application/json' });
+                                returnVar = {'return':0};
+                                res.end(JSON.stringify(returnVar));
                                 return console.log(error);
                             }
                             PaypalMeLink = result[0]['PaypalMeLink'];
                             var sql6 = "SELECT PaypalName FROM UserData WHERE UserID=" + buyerID;
-                            connection_user.query(sql6,function(error,result){
+
+                            console.log(sql6);
+                            userconnection.query(sql6,function(error,result){
+
                                 if (error) {
+                                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                                    returnVar = {'return':0};
+                                    res.end(JSON.stringify(returnVar));
                                     return console.log(error);
                                 }
                                 buyerName = result[0]['PaypalName'];
                                 Email.SendBuyEmail(sellerEmail, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
                                 console.log("Email sent");
-                                var sql7 ="INSERT INTO History (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
-                                connection_user.query(sql7, function (error) {
+
+                                var sql7 ="INSERT INTO history (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
+                                console.log(sql7);
+                                userconnection.query(sql7, function (error) {
+
                                     if (error) {
+                                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                                        returnVar = {'return':0};
+                                        res.end(JSON.stringify(returnVar));
                                         return console.log(error);
                                     }
+                                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                                    returnVar = {'return':1};
+                                    res.end(JSON.stringify(returnVar));
                                     return console.log("History added");
                                 });
                             });
@@ -483,6 +517,9 @@ module.exports = {
                             }
                             else
                             {
+
+                                returnVar['userId'] = req.session.userId;
+
                                 returnVar['enable'] = "";
                             }
 

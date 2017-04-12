@@ -265,7 +265,7 @@ module.exports = {
                 LocationVar = results[0]['Location'];
                 PaypalMeLinkVar = results[0]['PaypalMeLink'];
                 returnVar = {FirstName:FirstNameVar,LastName:LastNameVar,Addr:AddrVar,TelNo:TelNoVar,
-                    Location:LocationVar,PaypalMeLink:PaypalMeLinkVar,UserId:userID};
+                    Location:LocationVar,PaypalMeLink:PaypalMeLinkVar,UserId:userID,userName:req.session.userName};
 
                 res.render('updateUserData', returnVar);
             }
