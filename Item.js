@@ -67,7 +67,7 @@ module.exports = {
     {
         //Perform back-end tasks (such as modifying the Activity Ind),
         //serve the paypal information to the buyer, and notifying the seller about the trade.
-        var Email= require('../Email');
+        var Email= require('./Email');
         var mysql = require("mysql");
 
         var sql = "SELECT SellerID, Price FROM ItemDesc WHERE ItemID=" + ItemID;
@@ -79,7 +79,7 @@ module.exports = {
         var sellerEmail;
         var buyerEmail;
 
-
+        console.log(sql);
 
         var connection = mysql.createConnection({
             "host": "localhost",
@@ -87,6 +87,13 @@ module.exports = {
             "user": "root",
             "password": "csci3100",
             "database": "item"
+        });
+        var userconnection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "user"
         });
         connection.query(sql, function (error,result){
             if (error) {
@@ -99,10 +106,10 @@ module.exports = {
             itemPrice=result[0]['Price'];
 
             var sql2 = "SELECT Email FROM UserLoginData WHERE UserID=" + sellerID;//seller email, paypal link
+            console.log(sql2);
+           // var sql2 = "SELECT Email, PaypalMeLink FROM UserData WHERE UserID=" + sellerID;//seller email, paypal link
 
-            var sql2 = "SELECT Email, PaypalMeLink FROM UserData WHERE UserID=" + sellerID;//seller email, paypal link
-
-            connection.query(sql2, function (error,result){
+            userconnection.query(sql2, function (error,result){
                 if (error) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     returnVar = {'return':0};
@@ -111,7 +118,8 @@ module.exports = {
                 }
                 sellerEmail = result[0]['Email'];
                 var sql3 = "SELECT Email FROM UserLoginData WHERE UserID=" + buyerID;//buyer email
-                connection.query(sql3, function (error,result) {
+                console.log(sql3);
+                userconnection.query(sql3, function (error,result) {
                     if (error) {
                         res.writeHead(200, { 'Content-Type': 'application/json' });
                         returnVar = {'return':0};
@@ -120,6 +128,7 @@ module.exports = {
                     }
                     buyerEmail=result[0]['Email'];
                     var sql4 = "UPDATE ItemDesc SET ActivityInd = '"+ActivityInd+"' WHERE ItemID="+ItemID;//update
+                    console.log(sql4);
                     connection.query(sql4, function (error,result) {
                         if (error) {
                             res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -129,24 +138,39 @@ module.exports = {
                         }
 
                         var sql5 = "SELECT PaypalMeLink FROM UserData WHERE UserID=" + sellerID;
-                        connection.query(sql5,function(error,result){
+                        console.log(sql5);
+                        userconnection.query(sql5,function(error,result){
                             if (error) {
+                                res.writeHead(200, { 'Content-Type': 'application/json' });
+                                returnVar = {'return':0};
+                                res.end(JSON.stringify(returnVar));
                                 return console.log(error);
                             }
                             PaypalMeLink = result[0]['PaypalMeLink'];
                             var sql6 = "SELECT PaypalName FROM UserData WHERE UserID=" + buyerID;
-                            connection.query(sql6,function(error,result){
+                            console.log(sql6);
+                            userconnection.query(sql6,function(error,result){
                                 if (error) {
+                                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                                    returnVar = {'return':0};
+                                    res.end(JSON.stringify(returnVar));
                                     return console.log(error);
                                 }
                                 buyerName = result[0]['PaypalName'];
                                 Email.SendBuyEmail(sellerEmail, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
                                 console.log("Email sent");
-                                var sql7 ="INSERT INTO History (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
-                                connection.query(sql7, function (error) {
+                                var sql7 ="INSERT INTO history (UserID, ItemID) VALUES ("+buyerID+", " +ItemID+ ")";
+                                console.log(sql7);
+                                userconnection.query(sql7, function (error) {
                                     if (error) {
+                                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                                        returnVar = {'return':0};
+                                        res.end(JSON.stringify(returnVar));
                                         return console.log(error);
                                     }
+                                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                                    returnVar = {'return':1};
+                                    res.end(JSON.stringify(returnVar));
                                     return console.log("History added");
                                 });
                             });
@@ -299,7 +323,7 @@ module.exports = {
                     var buttonHtml = "<input type='button' class='btn' id='buyButton' value='Buy this item'>'";
                 }
 
-                if (ActivityInd == "U") {
+                if (ActivityInd == "U" && SellerID != req.session.userId) {
                     res.render("message", {
                         head: "Oops! The item you are looking is unlisted by our staff.",
                         top: "We are sorry for any inconvience caused.",
@@ -497,7 +521,7 @@ module.exports = {
                             }
                             else
                             {
-
+                                returnVar['userId'] = req.session.userId;
                                 returnVar['enable'] = "";
                                 returnVar['userName'] =  req.session.userName;
                                 res.render("itemLogged", returnVar);

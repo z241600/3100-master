@@ -29,20 +29,18 @@
             <ul class="nav navbar-nav">
                <!--<li class="active"><a href="#">Home</a></li>-->
                 <li><a href="../">Home</a></li>
-                <li><a href="#">Page 1</a></li>
-                <li><a href="#">Page 2</a></li>
-                <li><a href="#">Page 3</a></li>
+                <li><a href="/createItem">Create item</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Messages<span class="badge">777</span> </a></li>
+                <li><a href="/message">Messages</a></li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span> <%=userName%>
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="./enableTwoAuth/">2 Factor Authentication</a></li>
-                        <li><a href="#">Edit userdata</a></li>
-                        <li><a href="#">Page 1-3</a></li>
+                        <li><a href="/updateUserData">Edit userdata</a></li>
+
                     </ul>
                 </li>
 
@@ -64,19 +62,19 @@
         <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
             <h3 class="text-center">Browse by categories:</h3>
             <div class="list-group">
-                <a href="#" class="list-group-item">Books & Audible</a>
-                <a href="#" class="list-group-item">Movies, Music & Games</a>
-                <a href="#" class="list-group-item">Eletronics & Cocmputers</a>
-                <a href="#" class="list-group-item">Home, Garden & Tools</a>
-                <a href="#" class="list-group-item">Beauty, Health & Food</a>
-                <a href="#" class="list-group-item">Toys, Kids & Baby</a>
-                <a href="#" class="list-group-item">Clothing, Shoes & Jewelry</a>
-                <a href="#" class="list-group-item">Handmade</a>
-                <a href="#" class="list-group-item">Sports & Outdoors</a>
-                <a href="#" class="list-group-item">Automotive & Industrial</a>
-                <a href="#" class="list-group-item">Others</a>
+                <a href="/search?cat=Books and Audible" class="list-group-item">Books and Audible</a>
+                <a href="/search?cat=Movies, Music and Games" class="list-group-item">Movies, Music and Games</a>
+                <a href="/search?cat=Eletronics and Cocmputers" class="list-group-item">Eletronics and Cocmputers</a>
+                <a href="/search?cat=Home, Garden and Tools" class="list-group-item">Home, Garden and Tools</a>
+                <a href="/search?cat=Beauty, Health and Food" class="list-group-item">Beauty, Health and Food</a>
+                <a href="/search?cat=Toys, Kids and Baby" class="list-group-item">Toys, Kids and Baby</a>
+                <a href="/search?cat=Clothing, Shoes and Jewelry" class="list-group-item">Clothing, Shoes and Jewelry</a>
+                <a href="/search?cat=Handmade" class="list-group-item">Handmade</a>
+                <a href="/search?cat=Sports and Outdoors" class="list-group-item">Sports and Outdoors</a>
+                <a href="/search?cat=Automotive and Industrial" class="list-group-item">Automotive and Industrial</a>
+                <a href="/search?cat=Others" class="list-group-item">Others</a>
 
-            </div>
+            </div>s
         </div>
 
         <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 ">
