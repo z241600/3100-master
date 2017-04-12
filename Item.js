@@ -63,7 +63,7 @@ module.exports = {
         });
 
     },
-    BuyItem:function(ItemID,buyerID)
+    BuyItem:function(ItemID,buyerID,res,req)
     {
         //Perform back-end tasks (such as modifying the Activity Ind),
         //serve the paypal information to the buyer, and notifying the seller about the trade.
@@ -90,27 +90,44 @@ module.exports = {
         });
         connection.query(sql, function (error,result){
             if (error) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                returnVar = {'return':0};
+                res.end(JSON.stringify(returnVar));
                 return console.log(error);
             }
             sellerID=result[0]['SellerID'];
             itemPrice=result[0]['Price'];
+
             var sql2 = "SELECT Email FROM UserLoginData WHERE UserID=" + sellerID;//seller email, paypal link
+
+            var sql2 = "SELECT Email, PaypalMeLink FROM UserData WHERE UserID=" + sellerID;//seller email, paypal link
+
             connection.query(sql2, function (error,result){
                 if (error) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    returnVar = {'return':0};
+                    res.end(JSON.stringify(returnVar));
                     return console.log(error);
                 }
                 sellerEmail = result[0]['Email'];
                 var sql3 = "SELECT Email FROM UserLoginData WHERE UserID=" + buyerID;//buyer email
                 connection.query(sql3, function (error,result) {
                     if (error) {
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        returnVar = {'return':0};
+                        res.end(JSON.stringify(returnVar));
                         return console.log(error);
                     }
                     buyerEmail=result[0]['Email'];
                     var sql4 = "UPDATE ItemDesc SET ActivityInd = '"+ActivityInd+"' WHERE ItemID="+ItemID;//update
                     connection.query(sql4, function (error,result) {
                         if (error) {
+                            res.writeHead(200, { 'Content-Type': 'application/json' });
+                            returnVar = {'return':0};
+                            res.end(JSON.stringify(returnVar));
                             return console.log(error);
                         }
+
                         var sql5 = "SELECT PaypalMeLink FROM UserData WHERE UserID=" + sellerID;
                         connection.query(sql5,function(error,result){
                             if (error) {
@@ -133,6 +150,7 @@ module.exports = {
                                     return console.log("History added");
                                 });
                             });
+
                         });
                     });
                 });
@@ -275,10 +293,10 @@ module.exports = {
                 var BuyerId = results[0]['BuyerId'];
                 if (SellerID == req.session.userId) {
                     //var buttonHtml="<a href='updateItem?ID="+ItemID+"'> Update Item Info</a>";
-                    var buttonHtml = "<input type='button' value='Update Item Info' onclick='window.location.href =\"updateItem?ID=" + ItemID + "\"'>";
+                    var buttonHtml = "<input type='button' class='btn' value='Update Item Info' onclick='window.location.href =\"updateItem?ID=" + ItemID + "\"'>";
                 }
                 else {
-                    var buttonHtml = "";
+                    var buttonHtml = "<input type='button' class='btn' id='buyButton' value='Buy this item'>'";
                 }
 
                 if (ActivityInd == "U") {
@@ -467,19 +485,25 @@ module.exports = {
                             });
                         sess.checkSession(req,res,function(res,bool,req) {
                             console.log(bool);
+                            console.log(htmlString);
+                            returnVar['html'] = htmlString;
+
                             if (bool != true) {
                                 //console.log("LOGGED");
+                                returnVar['userId'] = req.session.userId;
                                 returnVar['enable'] = "disabled";
+
+                                res.render("item", returnVar);
                             }
                             else
                             {
+
                                 returnVar['enable'] = "";
+                                returnVar['userName'] =  req.session.userName;
+                                res.render("itemLogged", returnVar);
                             }
 
-                            console.log(htmlString);
-                            returnVar['html'] = htmlString;
-                            returnVar['userId'] = req.session.userId;
-                            res.render("item", returnVar);
+
 
                             return 0;
                         });
