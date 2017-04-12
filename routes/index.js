@@ -182,263 +182,289 @@ router.get('/browseRecord', function (req,res,next){
 });
 
 
-router.get('/idSearch', function (req,res,next){
+router.get('/idSearch', function (req,res,next) {
     var targetID = req.body.targetID;
-    idSearch.init(res,targetID);
-
-router.post('/disable2FA', function (req,res,next){
-    var userId = req.body.userId;
-    TwoFA.disable2FA(userId,res);
+    idSearch.init(res, targetID);
 });
-
-router.get('/Search', function (req,res,next){
-    var targetName = req.query.name;
-
-    var cat = req.query.cat;
-    console.log(!targetName);
-    if(targetName&&cat){
-        search.searchByNameAndCat(res,req,targetName,cat);
-    }
-    if(targetName) {
-        search.simpleSearch(res, req, targetName);
-    }
-    if(cat) {
-        search.searchByCat(res,req,cat);
-    }
-
-});
-
-router.get('/priceSearch', function (req,res,next){
-    var priceUpperLimit = req.body.priceUpperLimit;
-    var priceLowerLimit = req.body.priceLowerLimit;
-    priceSearch.init(res,priceUpperLimit, priceLowerLimit);
-});
-
-router.get('/categorySearch', function (req,res,next){
-    var categoryName = req.body.categoryName;
-    categorySearch.init(res,categoryName);
-});
-
-router.get('/keywordSearch', function (req,res,next){
-    var targetName = req.body.targetName;
-    keywordSearch.init(res,targetName);
-});
-
-router.get('history', function (req,res,next) {
-    var userID = req.body.userID;
-    history.init(res,userID);
-});
-
-router.get('askForRecommend', function (req,res,next) {
-    var userID = req.body.userID;
-    askForRecommend.init(res,userID);
-});
-
-router.get('/recommend',function (req,res,next){
-    //this one need some more followup
-    var userID = req.body.userID;
-    recommend.init(res,userID);
-});
-
-router.get('/SignUp',function (req,res,next){
-    ssn = req.session;
-    sess.checkSession(req,res,function(res,bool,req){
-        console.log(bool);
-        if(bool==true)
-        {
-            //console.log("LOGGED");
-            res.render('messageRedir',{background:'green',head:"Hello!",top:"You have logged in",lower:"you will be redirected to our haome page." ,redir:"../"});
-        }else {
-            //console.log("NOT LOGGED");
-            res.render('signup', {});
-        }
+    router.post('/disable2FA', function (req, res, next) {
+        var userId = req.body.userId;
+        TwoFA.disable2FA(userId, res);
     });
 
-});
+    router.get('/Search', function (req, res, next) {
+        var targetName = req.query.name;
 
-router.get("/login",function (req,res,next){
-    //this one need some more followup
-    ssn = req.session;
-    sess.checkSession(req,res,function(res,bool,req){
-        console.log(bool);
-        if(bool==true)
-        {
-            //console.log("LOGGED");
-            res.render('messageRedir',{background:'green',head:"Hello!",top:"You have logged in",lower:"you will be redirected to our haome page." ,redir:"../"});
-        }else {
-            //console.log("NOT LOGGED");
-            res.render('signin', {});
+        var cat = req.query.cat;
+        console.log(!targetName);
+        if (targetName && cat) {
+            search.searchByNameAndCat(res, req, targetName, cat);
         }
+        if (targetName) {
+            search.simpleSearch(res, req, targetName);
+        }
+        if (cat) {
+            search.searchByCat(res, req, cat);
+        }
+
     });
 
-});
-
-router.get("/item",function (req,res,next){
-    //this one need some more followup
-    var itemID = req.query.ID;
-    item.retrieveItem(itemID,res,req);
-});
-
-router.get("/createItem",function (req,res,next){
-    //this one need some more followup
-
-    ssn = req.session;
-    sess.checkSession(req,res,function(res,bool,req){
-        console.log(bool);
-        if(bool==true)
-        {
-            //console.log("LOGGED");
-            res.render("additem",{});
-        }else {
-            //console.log("NOT LOGGED");
-            res.render('messageRedir',{background:'red',head:"Ooops!",top:"You are not logged in",lower:"you will be redirected to our haome page." ,redir:"../"});
-        }
+    router.get('/priceSearch', function (req, res, next) {
+        var priceUpperLimit = req.body.priceUpperLimit;
+        var priceLowerLimit = req.body.priceLowerLimit;
+        priceSearch.init(res, priceUpperLimit, priceLowerLimit);
     });
-});
-router.get("/inputTwoFactorToken",function (req,res,next) {
-    res.render("input2FAToken",{});
-});
 
+    router.get('/categorySearch', function (req, res, next) {
+        var categoryName = req.body.categoryName;
+        categorySearch.init(res, categoryName);
+    });
 
+    router.get('/keywordSearch', function (req, res, next) {
+        var targetName = req.body.targetName;
+        keywordSearch.init(res, targetName);
+    });
 
-router.post("/cmtSub",function (req,res,next) {
+    router.get('history', function (req, res, next) {
+        var userID = req.body.userID;
+        history.init(res, userID);
+    });
 
-    var UserId = req.body.UserId;
-    var cmtMsg = req.body.cmtMsg;
-    var cmtID = req.body.cmtID;
-    console.log(UserId);
-    console.log(cmtMsg);
-    console.log(cmtID);
+    router.get('askForRecommend', function (req, res, next) {
+        var userID = req.body.userID;
+        askForRecommend.init(res, userID);
+    });
 
+    router.get('/recommend', function (req, res, next) {
+        //this one need some more followup
+        var userID = req.body.userID;
+        recommend.init(res, userID);
+    });
 
-    comment.postSubComment(UserId,cmtMsg,cmtID,req,res);
-});
-
-
-router.post("/cmtMain",function (req,res,next) {
-
-    var UserId = req.body.UserId;
-    var cmtMsg = req.body.cmtMsg;
-    var itemId = req.body.itemId;
-
-        comment.postMainComment(UserId,cmtMsg,itemId,req,res);
-});
-
-
-router.post("/verifyTwoFactorToken",function (req,res,next) {
-    /*ssn = req.session;
-    ssn.userName =  results[0]['userName'];
-    ssn.userId = userID;
-    ssn.TwoFAToken = results[0]['TwoFactorAuth'];
-    ssn.redirectTo ="login"*/
-    ssn = req.session;
-    if(ssn.TwoFAToken==""||ssn.userName=="")
-    {
-        res.render('messageRedir',{background:'red',head:"Ooops!",top:"You are not allowded in here!",lower:"you will be redirected to our haome page." ,redir:"../"});
-        return 0;
-    }
-    if(ssn.redirectTo =="login")
-    {
-        console.log("login Detected!");
-        TwoFA.verify2FAToken(ssn.userId,req.body.pwd,res,function (res,verified) {
-            if(verified)
-            {
-                sess.createSession(req,ssn.userId,res);
-            }
-            else
-            {
-                req.session.destroy();
-                res.render('messageRedir',{background:'red',head:"Ooops!",top:"Two Factor Authendication code invaild!",lower:"you will be redirected to our haome page." ,redir:"../"});
+    router.get('/SignUp', function (req, res, next) {
+        ssn = req.session;
+        sess.checkSession(req, res, function (res, bool, req) {
+            console.log(bool);
+            if (bool == true) {
+                //console.log("LOGGED");
+                res.render('messageRedir', {
+                    background: 'green',
+                    head: "Hello!",
+                    top: "You have logged in",
+                    lower: "you will be redirected to our haome page.",
+                    redir: "../"
+                });
+            } else {
+                //console.log("NOT LOGGED");
+                res.render('signup', {});
             }
         });
-    }
-});
 
-router.get("/loggout",function (req,res,next){
-    //this one need some more followup
-    user.LogoutUser(res,req);
-});
+    });
 
-router.get('/verifyEmailToken', function(req,res,next){
-    var token = req.query.token;
-    var userID = req.query.userID;
-    console.log(token);
-    Email.AuthEmailToken(userID,token,res);
-});
+    router.get("/login", function (req, res, next) {
+        //this one need some more followup
+        ssn = req.session;
+        sess.checkSession(req, res, function (res, bool, req) {
+            console.log(bool);
+            if (bool == true) {
+                //console.log("LOGGED");
+                res.render('messageRedir', {
+                    background: 'green',
+                    head: "Hello!",
+                    top: "You have logged in",
+                    lower: "you will be redirected to our haome page.",
+                    redir: "../"
+                });
+            } else {
+                //console.log("NOT LOGGED");
+                res.render('signin', {});
+            }
+        });
 
-router.post('/createItem',function(req,res,next){
-    var itemName = req.body.itemName;
-    var itemDesc = req.body.itemDesc;
-    var catId = req.body.catId;
-    var price = req.body.price;
-    var photoNum = req.body.photoNum;
+    });
 
-    createItem.init(res,itemName,catId,price,photoNum,itemDesc);
-});
+    router.get("/item", function (req, res, next) {
+        //this one need some more followup
+        var itemID = req.query.ID;
+        item.retrieveItem(itemID, res, req);
+    });
 
+    router.get("/createItem", function (req, res, next) {
+        //this one need some more followup
 
-var storage =   multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, './public/images/item');
-    },
-    filename: function (req, file, callback) {
-        callback(null,file.fieldname + '-' + Date.now()+ path.extname(file.originalname));
-    }
-});
-var upload = multer({ storage : storage}).single('photo');
+        ssn = req.session;
+        sess.checkSession(req, res, function (res, bool, req) {
+            console.log(bool);
+            if (bool == true) {
+                //console.log("LOGGED");
+                res.render("additem", {});
+            } else {
+                //console.log("NOT LOGGED");
+                res.render('messageRedir', {
+                    background: 'red',
+                    head: "Ooops!",
+                    top: "You are not logged in",
+                    lower: "you will be redirected to our haome page.",
+                    redir: "../"
+                });
+            }
+        });
+    });
+    router.get("/inputTwoFactorToken", function (req, res, next) {
+        res.render("input2FAToken", {});
+    });
 
-router.post('/createItemAjax',upload,function(req,res,next){
+    router.post("/buyItem",function(req,res,next){
+        var buyerID = req.body.buyerID;
+        var ItemID = req.body.ItemID;
+        console.log(buyerID);
+        console.log(ItemID);
+        item.BuyItem(ItemID,buyerID,res,req)
 
+    });
 
+    router.post("/cmtSub", function (req, res, next) {
 
-    var itemName = req.body.itemName;
-    var itemDesc = req.body.itemDesc;
-    var catId = req.body.cat;
-    var price = req.body.price;
-    //var photoNum = req.body.photoNum;
-
-    var photoNum =0;
-    var itemID=0;
-    itemID = item.createItem(itemName,catId,price,photoNum,itemDesc,catId,res,req);
-    console.log(itemID);
-
-});
-
-router.post('/verifyF2AToken',function (req,res,next) {
-
-            var token = req.body.token;
-            var secret = req.body.secret;
-            TwoFA.verify2FASecrete(res, token, secret,req);
-
-
-
-});
-
-router.post('/userLogin',function (req,res,next) {
-
-    var inputUsername = req.body.email;
-    var inputPassword = req.body.pwd;
-    user.LoginUser(res,inputUsername,inputPassword,req);
-
-});
-
-router.post('/createUser', function (req,res,next){
-    var userName = req.body.userName;
-    var password = req.body.password;
-    var email = req.body.email;
-    var lastName = req.body.lastName;
-    var firstName = req.body.firstName;
-    var addr = req.body.addr;
-    var telNo = req.body.telNo;
-    var location = req.body.location;
-    var PaypalMeLink = req.body.PaypalMeLink;
-    var PaypalName = req.body.PaypalName;
-
-    user.CreateUser(res,userName,password,firstName,lastName,addr,telNo,email,location,PaypalMeLink,PaypalName);
-});
+        var UserId = req.body.UserId;
+        var cmtMsg = req.body.cmtMsg;
+        var cmtID = req.body.cmtID;
+        console.log(UserId);
+        console.log(cmtMsg);
+        console.log(cmtID);
 
 
+        comment.postSubComment(UserId, cmtMsg, cmtID, req, res);
+    });
 
 
+    router.post("/cmtMain", function (req, res, next) {
 
-module.exports = router;
+        var UserId = req.body.UserId;
+        var cmtMsg = req.body.cmtMsg;
+        var itemId = req.body.itemId;
+
+        comment.postMainComment(UserId, cmtMsg, itemId, req, res);
+    });
+
+
+    router.post("/verifyTwoFactorToken", function (req, res, next) {
+        /*ssn = req.session;
+         ssn.userName =  results[0]['userName'];
+         ssn.userId = userID;
+         ssn.TwoFAToken = results[0]['TwoFactorAuth'];
+         ssn.redirectTo ="login"*/
+        ssn = req.session;
+        if (ssn.TwoFAToken == "" || ssn.userName == "") {
+            res.render('messageRedir', {
+                background: 'red',
+                head: "Ooops!",
+                top: "You are not allowded in here!",
+                lower: "you will be redirected to our haome page.",
+                redir: "../"
+            });
+            return 0;
+        }
+        if (ssn.redirectTo == "login") {
+            console.log("login Detected!");
+            TwoFA.verify2FAToken(ssn.userId, req.body.pwd, res, function (res, verified) {
+                if (verified) {
+                    sess.createSession(req, ssn.userId, res);
+                }
+                else {
+                    req.session.destroy();
+                    res.render('messageRedir', {
+                        background: 'red',
+                        head: "Ooops!",
+                        top: "Two Factor Authendication code invaild!",
+                        lower: "you will be redirected to our haome page.",
+                        redir: "../"
+                    });
+                }
+            });
+        }
+    });
+
+    router.get("/loggout", function (req, res, next) {
+        //this one need some more followup
+        user.LogoutUser(res, req);
+    });
+
+    router.get('/verifyEmailToken', function (req, res, next) {
+        var token = req.query.token;
+        var userID = req.query.userID;
+        console.log(token);
+        Email.AuthEmailToken(userID, token, res);
+    });
+
+    router.post('/createItem', function (req, res, next) {
+        var itemName = req.body.itemName;
+        var itemDesc = req.body.itemDesc;
+        var catId = req.body.catId;
+        var price = req.body.price;
+        var photoNum = req.body.photoNum;
+
+        createItem.init(res, itemName, catId, price, photoNum, itemDesc);
+    });
+
+
+    var storage = multer.diskStorage({
+        destination: function (req, file, callback) {
+            callback(null, './public/images/item');
+        },
+        filename: function (req, file, callback) {
+            callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        }
+    });
+    var upload = multer({storage: storage}).single('photo');
+
+    router.post('/createItemAjax', upload, function (req, res, next) {
+
+
+        var itemName = req.body.itemName;
+        var itemDesc = req.body.itemDesc;
+        var catId = req.body.cat;
+        var price = req.body.price;
+        //var photoNum = req.body.photoNum;
+
+        var photoNum = 0;
+        var itemID = 0;
+        itemID = item.createItem(itemName, catId, price, photoNum, itemDesc, catId, res, req);
+        console.log(itemID);
+
+    });
+
+    router.post('/verifyF2AToken', function (req, res, next) {
+
+        var token = req.body.token;
+        var secret = req.body.secret;
+        TwoFA.verify2FASecrete(res, token, secret, req);
+
+
+    });
+
+    router.post('/userLogin', function (req, res, next) {
+
+        var inputUsername = req.body.email;
+        var inputPassword = req.body.pwd;
+        user.LoginUser(res, inputUsername, inputPassword, req);
+
+    });
+
+    router.post('/createUser', function (req, res, next) {
+        var userName = req.body.userName;
+        var password = req.body.password;
+        var email = req.body.email;
+        var lastName = req.body.lastName;
+        var firstName = req.body.firstName;
+        var addr = req.body.addr;
+        var telNo = req.body.telNo;
+        var location = req.body.location;
+        var PaypalMeLink = req.body.PaypalMeLink;
+        var PaypalName = req.body.PaypalName;
+
+        user.CreateUser(res, userName, password, firstName, lastName, addr, telNo, email, location, PaypalMeLink, PaypalName);
+    });
+
+
+    module.exports = router;
+
