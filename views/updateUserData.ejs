@@ -13,18 +13,19 @@
     <script>
         $( document ).ready(function() {
 
-/*
+
+
             $("#submit").click(function(){
                 $.ajax({
-                url:"/createItemAjax/",
+                url:"/updateUserDataAction/",
                 type:"POST",
-                data:{itemName:$("#itemName").val(),itemDesc:$("#itemDesc").val(),catId:$("#cat").val(),price:$("#price").val()},
+                data:{firstName:$("#firstName").val(),lastName:$("#lastName").val(),addr:$("#addr").val(),telNo:$("#tel").val(),location:$("#loc").val(),paypalMe:$("#PaypalMe").val(),UserId:$("#UserId").val()},
                 success:function (result) {
                     console.log(result.return);
 
                     if (result.return) {
-                        alert("Item posted! Redirecting you to the homepage:");
-                        window.location.href = "./";
+                        alert("Data changed Successfully! Redirecting you to our homepage:");
+                        window.location.href = "../";
 
                     }
                     else {
@@ -32,9 +33,7 @@
                     }
                 }
             });});
-            */
             //click button then insert into DB
-
         });
 
 
@@ -59,7 +58,7 @@
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav">
           <!--<li class="active"><a href="#">Home</a></li>-->
-          <li><a href="#">Home</a></li>
+          <li><a href="../">Home</a></li>
           <li><a href="#">Page 1</a></li>
           <li><a href="#">Page 2</a></li>
           <li><a href="#">Page 3</a></li>
@@ -67,8 +66,8 @@
 
         <ul class="nav navbar-nav navbar-right">
           <li><a href="#">Messages<span class="badge">777</span> </a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li><a href="/SignUp/"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
         </ul>
         <form class="navbar-form navbar-right">
           <div class="form-group">
@@ -82,63 +81,56 @@
 
   <div class="jumbotron text-center">
     <h2>
-      Create item for sale<br>
+      Modify User Data<br>
     </h2>
-    <h5>Earn money by selling stuff!</h5>
+    <h5>You can modify your data below:</h5>
   </div>
 
 <div class="container containerTopPadding">
-  <form class="form-horizontal" action="\createItemAjax" method="POST" enctype="multipart/form-data">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="itemName">Item Name:</label>
-      <div class="col-sm-10">
-        <input type="text" name ="itemName"class="form-control" id="itemName" placeholder="Enter item name">
-      </div>
-    </div>
+  <form class="form-horizontal">
 
     <div class="form-group">
-      <label class="control-label col-sm-2" for="photo">upload photo:</label>
+      <label class="control-label col-sm-2" for="firstName">First Name:</label>
       <div class="col-sm-10">
-        <input type="file" name ="photo" class="form-control" id="photo" placeholder="Upload photo">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="price">Price:</label>
-      <div class="col-sm-10">
-        <input type="text" name ="price" class="form-control" id="price" placeholder="Enter price">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="itemDesc">Item Description:</label>
-      <div class="col-sm-10">
-        <input type="text" name ="itemDesc" class="form-control" id="itemDesc" placeholder="Enter item's description">
+        <input type="text" class="form-control" value="<%-FirstName%>" id="firstName" placeholder="Enter First Name">
       </div>
     </div>
     <div class="form-group">
-      <label for="sel1" class="control-label col-sm-2">Select categlory:</label>
+      <label class="control-label col-sm-2" for="lastName">Last Name:</label>
       <div class="col-sm-10">
-      <select name ="cat" class="form-control" id="cat">
-        <option name="Books & Audible" value="Books & Audible">Books & Audible</option>
-        <option name="Movies, Music & Games" value="Movies, Music & Games">Movies, Music & Games</option>
-        <option name="Eletronics & Cocmputers" value="Eletronics & Cocmputers">Eletronics & Cocmputers</option>
-        <option namee="Home, Garden & Tools" value="Home, Garden & Tools">Home, Garden & Tools</option>
-        <option namee="Beauty, Health & Food" value="Beauty, Health & Food">Beauty, Health & Food</option>
-        <option name="Toys, Kids & Baby" value="Toys, Kids & Baby">Toys, Kids & Baby</option>
-        <option name="Clothing, Shoes & Jewelry" value="Clothing, Shoes & Jewelry">Clothing, Shoes & Jewelry</option>
-        <option name="Handmade" value="Handmade">Handmade</option>
-        <option name="Sports & Outdoors" value="Sports & Outdoors">Sports & Outdoors</option>
-        <option name="Automotive & Industrial" value="Automotive & Industrial">Automotive & Industrial</option>
-        <option name="Others" value="Others">Others</option>
-      </select>
+        <input type="text" class="form-control" value="<%-LastName%>" id="lastName" placeholder="Enter Last  Name">
       </div>
     </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="addr">Address:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-Addr%>" id="addr" placeholder="Enter Address">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="tel">Tel Number:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-TelNo%>" id="tel" placeholder="Enter Tel Number">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="loc">Location:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-Location%>" id="loc" placeholder="Enter Location">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="PaypalMe">PaypalMe Link::</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" value="<%-PaypalMeLink%>" id="PaypalMe" placeholder="Enter Link to PaypalMe">
+      </div>
+    </div>
+    <input type="hidden" id="UserId" value="<%=UserId%>">
 
 
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button id="submit" type="submit" class="btn btn-default">Submit</button>
+        <button id="submit" type="button" class="btn btn-default">Submit</button>
       </div>
     </div>
   </form>
