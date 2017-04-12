@@ -26,9 +26,9 @@ module.exports = {
         var sql="INSERT INTO itemdesc (ItemName,ActivityInd,SellerID,Price,PhotoNum,ItemDesc,CatName) VALUES ('"+itemName+"','A',"+sellerID+","+price.toString()+",'"+req.file.filename+"','"+itemDesc+"','"+cat+"'); ";
         console.log(sql);
         //res.writeHead(200, { 'Content-Type': 'application/json' });
-        connection.query(sql, function (error, results) {
+        connection.query(sql, function (error) {
             if (error) {
-            console.log("Item insert failed!");
+                console.log("Item insert failed!");
                 console.log(error);
                 returnVar = 0;
                 return returnVar;
@@ -65,8 +65,63 @@ module.exports = {
     },
     BuyItem:function(ItemID,buyerID)
     {
-        //Perform back-end tasks (such as modifying the Actifity Ind),
+        //Perform back-end tasks (such as modifying the Activity Ind),
         //serve the paypal information to the buyer, and notifying the seller about the trade.
+      //Perform back-end tasks (such as modifying the Activity Ind),
+        //serve the paypal information to the buyer, and notifying the seller about the trade.
+        var Email= require('../Email');
+        var mysql = require("mysql");
+
+        var sql = "SELECT SellerID, Price FROM ItemDesc WHERE ItemID=" + ItemID;
+        var sellerID;
+        var itemPrice;
+        var PaypalMeLink;
+        var buyerName;
+        var ActivityInd = 'U';
+        var sellerEmail;
+        var buyerEmail;
+
+
+
+        var connection = mysql.createConnection({
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "csci3100",
+            "database": "item"
+        });
+        connection.query(sql, function (error,result){
+            if (error) {
+                return console.log(error);
+            }
+            sellerID=result[0]['SellerID'];
+            itemPrice=result[0]['itemPrice'];
+            var sql2 = "SELECT Email, PaypalMeLink FROM UserData WHERE UserID=" + sellerID;//seller email, paypal link
+            connection.query(sql2, function (error,result){
+                if (error) {
+                    return console.log(error);
+                }
+                sellerEmail = result[0]['Email'];
+                PaypalMeLink= result[0]['PaypalMeLink'];
+                var sql3 = "SELECT Email, PaypalName FROM UserData WHERE UserID=" + buyerID;//buyer email
+                connection.query(sql3, function (error,result) {
+                    if (error) {
+                        return console.log(error);
+                    }
+                    buyerName=result[0]['PaypalName'];
+                    buyerEmail=result[0]['Email'];
+                    var sql4 = "UPDATE ItemDesc SET ActivityInd = '"+ActivityInd+"' WHERE ItemID="+ItemID;//update
+                    connection.query(sql4, function (error,result) {
+                        if (error) {
+                            return console.log(error);
+                        }
+                        Email.SendBuyEmail(sellerID, ItemID, buyerEmail, PaypalMeLink, itemPrice, buyerName);
+                        return console.log("Email sent");
+                    });
+                });
+            });
+        });
+
     },
     updateItem:function (itemName,price,itemDesc,itemId,res,req) {
         //update the item's info, given the ID and the data needed in the JSON.
@@ -97,6 +152,7 @@ module.exports = {
 
     },
     retrieveUpdateItem:function(ItemID,res,req) {
+
         var mysql = require("mysql");
         var session = require("express-session");
         var user = require("./user");
@@ -108,6 +164,7 @@ module.exports = {
             "password": "csci3100",
             "database": "item"
         });
+
         var connection = mysql.createConnection({
             "host": "localhost",
             "port": 3306,
@@ -163,6 +220,7 @@ module.exports = {
             "password": "csci3100",
             "database": "item"
         });
+
         var connection = mysql.createConnection({
             "host": "localhost",
             "port": 3306,
@@ -287,7 +345,9 @@ module.exports = {
                         },function (err) {
                             callback2();
 
+
                         });
+
 
                     },function (callback3) {
 
@@ -474,4 +534,5 @@ module.exports = {
             }
         });
     }
+
 };

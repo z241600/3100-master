@@ -73,7 +73,7 @@ module.exports = {
         });
     },
 
-    CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location){
+    CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location,PaypalMeLink,PaypalName){
         var he =  require("he");
         var mysql = require("mysql");
         var email = require("./Email");
@@ -103,6 +103,8 @@ module.exports = {
         Addr = he.encode(Addr);
         TelNo = he.encode(TelNo);
         Location = he.encode(Location);
+        PaypalMeLink = he.encode(PaypalMeLink);
+        PaypalName = he.encode(PaypalName);
         var sql = "INSERT INTO userlogindata (userName,PWHash,Email,AccType) VALUES ('"+UserName+"','"+PWHashString+"','"+Email+"','V')";
         connection.query(sql, function (error, results) {
             if(error){
@@ -114,7 +116,7 @@ module.exports = {
         console.log(sql);
         connection.query(sql, function (error, results) {
             userID = results[0]['UserId'];
-            var sql2 = "INSERT INTO userdata (UserID,FirstName,LastName,Addr,TelNo,Location) VALUES ("+userID.toString()+",'"+FirstName+"','"+LastName+"','"+Addr+"','"+TelNo+"','"+Location+"')";
+            var sql2 = "INSERT INTO userdata (UserID,FirstName,LastName,Addr,TelNo,Location,PaypalMeLink,PaypalName) VALUES ("+userID.toString()+",'"+FirstName+"','"+LastName+"','"+Addr+"','"+TelNo+"','"+Location+"','"+PaypalMeLink+"','"+PaypalName+"')";
             console.log(sql2);
             connection.query(sql2, function (error, results) {
                 res.writeHead(200, { 'Content-Type': 'application/json' });

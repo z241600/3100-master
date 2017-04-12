@@ -62,7 +62,7 @@ module.exports = {
         const Acctype = 'V';
         var sql = "UPDATE userlogindata SET AccType = '"+Acctype+"', AuthToken = '"+token+"' WHERE UserID="+userID;
 
-        connection.query(sql, function (error, results) {
+        connection.query(sql, function (error) {
             if (error){
                 return console.log(error.toString());
             }
@@ -74,7 +74,6 @@ module.exports = {
         //Authendicate user with the provided token, and activating the user's account
 
         var mysql = require("mysql");
-        var he =  require("he");
         var connection = mysql.createConnection({
             "host": "localhost",
             "port": 3306,
@@ -95,7 +94,7 @@ module.exports = {
             if (AuthToken === Token){
                 console.log("Verified %s", userID);
                 var sql2 = "UPDATE userlogindata SET AccType = '"+Acctype+"',AuthToken = '"+buf+"' WHERE UserID="+userID;
-                connection.query(sql2, function (error, results) {
+                connection.query(sql2, function (error) {
                     if (error){
                         return console.log(error.toString());
                     }
@@ -108,6 +107,62 @@ module.exports = {
             }
         });
 
+    },
+
+    SendBuyEmail: function (SellEmail, ItemID, BuyEmail, Paylink, Price, BuyName) {
+
+        //send email to user to verify the email address
+        var nodemailer = require('nodemailer');
+
+        var htmltemplate = "<p>Please click the following link to make the payment via PayPal. You would need to login to your Paypal for this to work. The amount has been set for you. Please do not change that or the seller might not deliver the product.</p><br> <a href='";
+
+        htmltemplate += Paylink + "/"+ Price +  "'>Click Here to Pay:</a>" ;
+
+        console.log(htmltemplate);
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'csci3100proj@gmail.com',
+                pass: 'lb5db4wr'
+            }
+        });
+
+        var mailOptions = {
+            from: '"Please Do not reply to this email" <noreply_1stopshop@csci3100.com>',
+            to: BuyEmail,
+            subject: 'Payment Method for your purchase',
+            text: 'Please click the following link to pay.',
+            html: htmltemplate
+
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                return console.log(error);
+            }
+            console.log('Message %s sent: %s', info.messageId, info.response);
+        });
+
+        htmltemplate = "<p>Someone want to buy your product! Please check your Paypal invoice for transaction. Please contact "+ BuyName +" via email: "+ BuyEmail + " or our PM system. After delivery is made, please update the item as 'Shipped'.</p><br> <a href='";
+
+        htmltemplate += "http://localhost:3000/item?ID=" + ItemID +  "'>Click Here to view the item:</a>" ;
+
+        mailOptions = {
+            from: '"Please Do not reply to this email" <noreply_1stopshop@csci3100.com>',
+            to: SellEmail,
+            subject: 'One of your item is being sold',
+            text: 'Email and Stuff is in here',
+            html: htmltemplate
+
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                return console.log(error);
+            }
+            console.log('Message %s sent: %s', info.messageId, info.response);
+        });
     }
 };
 

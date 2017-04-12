@@ -238,7 +238,7 @@ router.get("/createItem",function (req,res,next){
     });
 });
 router.get("/inputTwoFactorToken",function (req,res,next) {
-res.render("input2FAToken",{});
+    res.render("input2FAToken",{});
 });
 
 
@@ -373,8 +373,10 @@ router.post('/createUser', function (req,res,next){
     var addr = req.body.addr;
     var telNo = req.body.telNo;
     var location = req.body.location;
+    var PaypalMeLink = req.body.PaypalMeLink;
+    var PaypalName = req.body.PaypalName;
 
-    user.CreateUser(res,userName,password,firstName,lastName,addr,telNo,email,location);
+    user.CreateUser(res,userName,password,firstName,lastName,addr,telNo,email,location,PaypalMeLink,PaypalName);
 });
 
 
