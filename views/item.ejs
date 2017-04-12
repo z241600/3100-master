@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>1 Stop Shop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/main.css">
+</head>
+
+<script>
+    $( document ).ready(function() {
+
+        if($("#postMainCmtButton").prop("disabled")==true)
+        {
+            $(".postSubCmtButton").prop("disabled",true);
+            $(".subCmtText").prop("disabled",true);
+        }
+
+
+        $(".postSubCmtButton").click(function() {
+            var CmtID = $(this).data("value");
+            console.log(CmtID);
+            $.ajax({
+                url:"/cmtSub/",
+                type:"POST",
+                data:{UserId:$("#userId").val(),cmtMsg:$("#CmtID-"+CmtID).val(),cmtID:CmtID},
+                success:function (result) {
+                    console.log(result.return);
+
+                    if (result.return) {
+                        alert("Comment Posted! Refreshing...:");
+                        window.location.href = "./";
+
+                    }
+                    else {
+                        alert("Something went wrong. Please try again!");
+                    }
+                }
+            });
+        });
+
+
+
+        $("#postMainCmtButton").click(function() {
+            $.ajax({
+                url:"/cmtMain/",
+                type:"POST",
+                data:{UserId:$("#userId").val(),cmtMsg:$("#postMainCmt").val(),itemId:$("#itemId").val()},
+                success:function (result) {
+                    console.log(result.return);
+
+                    if (result.return) {
+                        alert("Comment Posted! Refreshing...:");
+                        window.location.href = "./";
+
+                    }
+                    else {
+                        alert("Something went wrong. Please try again!");
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+<style>
+    .cmtMainBlock{
+        margin-top: 10px;
+        margin-bottom:0;
+    }
+</style>
+<body>
+
+<nav class="navbar navbar-default topNavBar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="glyphicon glyphicon-menu-hamburger"></span>
+
+            </button>
+            <a class="navbar-brand" href="#">1StopShop</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+               <!--<li class="active"><a href="#">Home</a></li>-->
+                <li><a href="../">Home</a></li>
+                <li><a href="#">Page 1</a></li>
+                <li><a href="#">Page 2</a></li>
+                <li><a href="#">Page 3</a></li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Messages<span class="badge">777</span> </a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search for product">
+                </div>
+                <button type="submit" class="btn btn-default">Go!</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+<div class="row">
+    <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+        <div class="row" style="padding-top: 20px;">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <img style="width:100%;" src="/images/item/<%=PhotoNum%>">
+            </div>
+            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                <h3>
+                    <%-ItemName%>
+                </h3>
+                <br>
+                <h2>
+                    $<%-Price%>
+                </h2>
+                <br>
+                <h3>
+                    <%-SellerName%>
+                    <br>
+                    <br>
+                    <%-CatName%>
+                </h3>
+                <%-button%>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 ">
+            <br>
+            <br>
+            <br>
+            <h4><%-ItemDesc%></h4>
+
+        </div>
+    </div>
+</div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+            <%-html%>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="form-group">
+
+            <div class="col-sm-8">
+                <input type="text"  name="email" class="form-control" id="postMainCmt" placeholder="Write Comment..." <%=enable%>>
+            </div>
+            <div class="col-sm-2">
+                <input type="button" class="btn" id="postMainCmtButton" value="post!"  <%=enable%>>
+                <input type="hidden"  id="userId" value="<%=userId%>">
+                <input type="hidden"  id="itemId" value="<%=ItemID%>">
+            </div>
+
+        </div>
+
+    </div>
+    <br>
+</div>
+<div class="container-fluid text-center footerBar">
+    Copyright xxx.ltd.
+</div>
+</body>
+</html>

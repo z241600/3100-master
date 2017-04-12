@@ -10,40 +10,27 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/stylesheets/main.css">
+    <script src="/javascripts/qrcode.js"></script>
     <script>
         $( document ).ready(function() {
-            $("#userName").on('input',function() {
-                //console.log("button pressed!");
-                $.ajax({url: "/checkUserDup?userName="+$("#userName").val(), success: function(result){
-                    console.log(result);
-                    if(result.UserId==-1){
-                        $("#output").attr("class","glyphicon glyphicon-ok");
-                        console.log("ok!");
-                    }
-                    else{
-                        $("#output").attr("class","glyphicon glyphicon-remove");
-                      //  $("#output").html("<font color='red'> user name is used!</font>");
-                        console.log("fail!");
-                    }
-                }});
-            });
 
 
-            $("#submit").click(function(){
+            $("#SubmitButton").click(function(){
                 $.ajax({
-                url:"/createUser/",
+                url:"/disable2FA/",
                 type:"POST",
-                data:{userName:$("#userName").val(),password:$("#pwd").val(),email:$("#email").val(),firstName:$("#firstName").val(),lastName:$("#lastName").val(),addr:$("#addr").val(),telNo:$("#tel").val(),location:$("#loc").val()},
+                data:{userId:<%=userId%>},
                 success:function (result) {
                     console.log(result.return);
 
                     if (result.return) {
-                        alert("Sign-up Successful! Redirecting you to our homepage:");
+                        alert("Two Factor Authentication have been disabled! Redirecting you to our homepage:");
                         window.location.href = "./";
 
                     }
                     else {
                         alert("Something went wrong. Please try again!");
+
                     }
                 }
             });});
@@ -55,9 +42,10 @@
 
   </head>
   <style>
-.greenBackground{
-  background-color: #5dff3a;
-}
+    .containerTopPadding{
+      padding-top: 10px;
+    }
+
   </style>
 
 
@@ -95,11 +83,12 @@
     </div>
   </nav>
 
-  <div class="jumbotron text-center greenBackground">
+  <div class="jumbotron text-center">
     <h2>
-      Logged in Successfully!<br>
+      Two-factor Authentication is eanabled!<br>
     </h2>
-    <h5>Welcome!<br>Redirecting You to our homepage...</h5>
+    <h5>If you wish to disableTwo-factor Authentication, click the button:</h5>
+    <input type="button" value="Disable" id="SubmitButton">
   </div>
 
 
