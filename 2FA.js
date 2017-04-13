@@ -33,7 +33,7 @@ module.exports = {
                 res.render('2FA', returnVar);
             }
             else {
-                res.render('disable2FA', {userId:UserId});
+                res.render('disable2FA', {userId:UserId,userName:req.session.userName});
             }
         });
 

@@ -105,7 +105,8 @@ module.exports = {
         Location = he.encode(Location);
         PaypalMeLink = he.encode(PaypalMeLink);
         PaypalName = he.encode(PaypalName);
-        var sql = "INSERT INTO userlogindata (userName,PWHash,Email,AccType) VALUES ('"+UserName+"','"+PWHashString+"','"+Email+"','V')";
+        var sql = "INSERT INTO userlogindata (userName,PWHash,Email,AccType,TwoFactorAuth) VALUES ('"+UserName+"','"+PWHashString+"','"+Email+"','V','')";
+        console.log(sql);
         connection.query(sql, function (error, results) {
             if(error){
                 console.log(error);

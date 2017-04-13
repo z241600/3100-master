@@ -470,9 +470,10 @@ router.get('/idSearch', function (req,res,next) {
         var addr = req.body.addr;
         var telNo = req.body.telNo;
         var location = req.body.location;
-        var PaypalMeLink = req.body.PaypalMeLink;
-        var PaypalName = req.body.PaypalName;
-
+        //var PaypalMeLink = req.body.PaypalMeLink;
+       //var PaypalName = req.body.PaypalName;
+        var PaypalMeLink = "";
+        var PaypalName="";
         user.CreateUser(res, userName, password, firstName, lastName, addr, telNo, email, location, PaypalMeLink, PaypalName);
     });
 
