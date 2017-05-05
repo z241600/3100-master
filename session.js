@@ -2,7 +2,7 @@
  * Created by user on 08-Apr-17.
  */
 module.exports = {
-
+    //check the session against the database, see if the user is logged in.
     checkSession: function (req,res, callback) {
         var session = require('express-session');
         var sessionID = req.sessionID;
@@ -44,6 +44,8 @@ module.exports = {
     },
 
     createSession:function(req,userID, res) {
+        //update the session data in the database with the current session id
+        //and initialize the session variables.
         var session = require('express-session');
         var sessionID = req.sessionID;
         var sess=req.session;

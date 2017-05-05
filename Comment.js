@@ -4,7 +4,7 @@
 module.exports = {
 
 
-
+    // to insert the comment into the database with item id as a refrence when getting the item out of the database
     postMainComment:function(UserId,cmtMsg,itemId,req,res)
     {
         var he = require('he');
@@ -33,6 +33,7 @@ module.exports = {
             }
         });
     },
+    // to insert the comment into the database with CmtID as a refrence when getting the item out of the database
     postSubComment:function(UserId,cmtMsg,itemId,req,res) {
 
         var he = require('he');

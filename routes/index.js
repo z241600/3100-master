@@ -29,6 +29,9 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //To get POST parameters, use
 //var user_id = req.body.VARNAME;
 
+
+// This is the main router of the system, to redirect traffic to different functions
+
 var ssn;
 
 /* GET home page. */
@@ -162,11 +165,7 @@ router.post('/updateItemAction',function (req,res,next) {
 
 });
 
-router.get('/user',function (req,res,next) {
 
-  userDB.printDB(req,res);
-
-});
 
 router.get('/checkUserDup',function (req,res,next) {
     var userName = req.query.userName;
@@ -192,16 +191,10 @@ router.get('/enableTwoAuth',function (req,res,next) {
     });
 });
 
-router.get('/browseRecord', function (req,res,next){
-    var itemId = req.body.itemId;
-    browseRecord.init(res,itemId);
-});
 
 
-router.get('/idSearch', function (req,res,next) {
-    var targetID = req.body.targetID;
-    idSearch.init(res, targetID);
-});
+
+
     router.post('/disable2FA', function (req, res, next) {
         var userId = req.body.userId;
         TwoFA.disable2FA(userId, res);
@@ -224,32 +217,9 @@ router.get('/idSearch', function (req,res,next) {
 
     });
 
-    router.get('/priceSearch', function (req, res, next) {
-        var priceUpperLimit = req.body.priceUpperLimit;
-        var priceLowerLimit = req.body.priceLowerLimit;
-        priceSearch.init(res, priceUpperLimit, priceLowerLimit);
-    });
 
-    router.get('/categorySearch', function (req, res, next) {
-        var categoryName = req.body.categoryName;
-        categorySearch.init(res, categoryName);
-    });
 
-    router.get('/keywordSearch', function (req, res, next) {
-        var targetName = req.body.targetName;
-        keywordSearch.init(res, targetName);
-    });
 
-    router.get('askForRecommend', function (req, res, next) {
-        var userID = req.body.userID;
-        askForRecommend.init(res, userID);
-    });
-
-    router.get('/recommend', function (req, res, next) {
-        //this one need some more followup
-        var userID = req.body.userID;
-        recommend.init(res, userID);
-    });
 
     router.get('/SignUp', function (req, res, next) {
         ssn = req.session;
@@ -407,15 +377,7 @@ router.get('/idSearch', function (req,res,next) {
         Email.AuthEmailToken(userID, token, res);
     });
 
-    router.post('/createItem', function (req, res, next) {
-        var itemName = req.body.itemName;
-        var itemDesc = req.body.itemDesc;
-        var catId = req.body.catId;
-        var price = req.body.price;
-        var photoNum = req.body.photoNum;
 
-        createItem.init(res, itemName, catId, price, photoNum, itemDesc);
-    });
 
 
     var storage = multer.diskStorage({

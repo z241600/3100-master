@@ -4,7 +4,7 @@
 module.exports = {
 
     checkUserDup: function (userName,res) {
-
+        // check for duplicates of user name during sign-up.
         var mysql = require("mysql");
         var connection = mysql.createConnection({
             "host": "localhost",
@@ -38,7 +38,7 @@ module.exports = {
         });
     },
     checkEmailDup: function (userName,res) {
-
+    // check for duplicates of email during sign-up.
         var mysql = require("mysql");
         var connection = mysql.createConnection({
             "host": "localhost",
@@ -74,6 +74,7 @@ module.exports = {
     },
 
     CreateUser:function (res,UserName,password,FirstName,LastName,Addr,TelNo,Email,Location,PaypalMeLink,PaypalName){
+        //create user record using user provided data.
         var he =  require("he");
         var mysql = require("mysql");
         var email = require("./Email");
@@ -146,6 +147,10 @@ module.exports = {
     },
 
     LoginUser:function (res,UserName_input,password_input,req){
+        //authendicate user with provided username and password.
+        //if it is correct but no 2FA active, log user in.
+        //if it is correct with 2FA active, redir user to 2FA page..
+        //if password is valid,
         var he =  require("he");
         var mysql = require("mysql");
         var scrypt = require("scrypt");
@@ -236,8 +241,8 @@ module.exports = {
 
 
 
-    updateUserData:function (res,req)
-    {
+    updateUserData:function (res,req){
+        //get the user's data, for editing the user's data use.
         var mysql = require("mysql");
         var he = require("he");
         var session = require('express-session');
@@ -275,6 +280,7 @@ module.exports = {
 
     },
     updateUserDataAction:function(FirstName,LastName,Addr,TelNo,Location,PaypalMeLink,UserId,res,req){
+        //with provided data, modify the user's data.
         var mysql = require("mysql");
         var he = require("he");
         //var session = require('express-session');
@@ -312,12 +318,14 @@ module.exports = {
 
     },
     LogoutUser:function(res,req) {
+        //logout the user, destroy the session.
         var session = require('express-session');
         req.session.destroy();
         res.render("messageRedir",{head:"Logout successful!",top:"bye!",lower:"We wish seeing you again!",redir:"../",background:"green"});
     },
     getLoggedData:function(res,req,returnVar,callbackl)
     {
+        //NOT USED
         var session = require('express-session');
         returnVar['userName'] =req.session.userName;
         return returnVar;

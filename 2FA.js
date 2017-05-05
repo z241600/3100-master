@@ -3,8 +3,10 @@
  */
 module.exports = {
 
-    generate2FAToken: function (res,UserId,req){
 
+    //generate a new code for user if they don't have 2FA active, otherwise
+    //display the page that allow users to disable 2FA.
+    generate2FAToken: function (res,UserId,req){
         var speakeasy = require('speakeasy');
         var secret = speakeasy.generateSecret({length: 20});
         var session = require('express-session');
@@ -38,6 +40,8 @@ module.exports = {
         });
 
     },
+    // to verify the secrete provided with the 2FA token
+    //used to verify that the user have set up the app correctly teh first time.
     verify2FASecrete: function (res,token,secerte,req) {
         var speakeasy = require('speakeasy');
         var mysql = require("mysql");
@@ -59,8 +63,6 @@ module.exports = {
         console.log(verified);
 
         if(verified){
-
-            //WAITING FOR LOGIN?SESSION TO BE FINISHED
             UserID = req.session.userId;
             console.log(UserID);
             var sql = "UPDATE UserLoginData SET TwoFactorAuth='"+secerte+"' WHERE UserID="+UserID.toString() ;
@@ -86,7 +88,9 @@ module.exports = {
             res.end(JSON.stringify(returnVar));
         }
        // res.end(JSON.stringify(returnVar));
-    },verify2FAToken:function(userID,token,res,callback){
+    },
+    //to verify a user with provided 2FA token
+    verify2FAToken:function(userID,token,res,callback){
         var speakeasy = require('speakeasy');
         var mysql = require("mysql");
         var connection = mysql.createConnection({

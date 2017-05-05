@@ -6,7 +6,7 @@ module.exports = {
 
     SendAuthEmail: function (Email,userID,res,callback) {
 
-        //send email to user to verify the email address
+        //send email to user to verify the email address with a uniquely generated code
         var nodemailer = require('nodemailer');
 
         var mysql = require("mysql");
